@@ -6,8 +6,8 @@
     <title>🍞 Panadería y Pastelería - POS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
         header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
         nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         nav button { background: #6d4422; font-size: 14px; }
@@ -27,7 +27,9 @@
         .total { font-size: 22px; font-weight: bold; text-align: right; margin-top: 15px; color: #8b5a2b; }
         .ticket { background: #fff; border: 1px dashed #888; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 13px; display: none; }
         .fila-ticket { display: flex; justify-content: space-between; padding: 2px 0; }
-        .auth-box { max-width: 400px; margin: 100px auto; }
+        .auth-box { max-width: 400px; margin: 0 auto; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 30px; border-radius: 12px; background: #fff; }
+        .auth-box h2 { border: none; margin-bottom: 20px; }
+        .auth-box img { max-width: 60px; margin-bottom: 10px; }
         .oculto { display: none !important; }
         .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
         .exito { background: #d4edda; color: #155724; display: block; }
@@ -40,50 +42,60 @@
         .caja-card h3 { font-size: 14px; color: #8b5a2b; margin-bottom: 5px; }
         .caja-card .valor { font-size: 24px; font-weight: bold; }
         .fecha-filtro { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 15px; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-contenido { background: white; margin: 5% auto; padding: 25px; border-radius: 10px; max-width: 500px; position: relative; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal.activo { display: flex; }
+        .modal-contenido { background: white; padding: 25px; border-radius: 10px; max-width: 500px; width: 90%; position: relative; }
         .cerrar-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #888; }
         .cerrar-modal:hover { color: #000; }
+        .btn-entrar { background: #d4a017; color: #fff; font-weight: bold; }
+        .btn-registrar { background: #e8d5b7; color: #5a3e2b; font-weight: bold; border: 1px solid #8b5a2b; }
+        .btn-agregar { background: #f0d4b5; color: #5a3e2b; padding: 5px 10px; font-size: 13px; }
+        .btn-quitar { background: #e74c3c; padding: 2px 8px; font-size: 12px; }
+        .cantidad-controles { display: flex; align-items: center; gap: 8px; }
+        .cantidad-controles button { padding: 2px 8px; margin: 0; }
+        #sistema { width: 100%; }
     </style>
 </head>
 <body>
 
 <!-- 🔐 INICIO DE SESIÓN -->
-<div id="seccion-auth" class="seccion auth-box">
-    <h2 style="text-align: center;">🥐 Iniciar Sesión</h2>
+<div id="seccion-auth" class="auth-box">
+    <div style="font-size:40px;">🥐</div>
+    <h2>Iniciar Sesión</h2>
     <div id="mensaje-auth" class="mensaje"></div>
-    <div>
-        <label>Usuario:</label><br>
+    <div style="text-align: left;">
+        <label><strong>Usuario:</strong></label><br>
         <input type="text" id="usuario" placeholder="Escribe tu usuario">
     </div>
-    <div>
-        <label>Contraseña:</label><br>
+    <div style="text-align: left; margin-top:10px;">
+        <label><strong>Contraseña:</strong></label><br>
         <input type="password" id="contrasena" placeholder="Escribe tu contraseña">
     </div>
     <br>
-    <button onclick="iniciarSesion()">🔑 Entrar</button>
-    <button onclick="mostrarRegistro()">📝 Registrarse</button>
+    <button class="btn-entrar" onclick="iniciarSesion()">🔑 Entrar</button>
+    <button class="btn-registrar" onclick="mostrarRegistro()">📝 Registrarse</button>
 </div>
 
 <!-- 📝 REGISTRO -->
-<div id="seccion-registro" class="seccion auth-box oculto">
-    <h2 style="text-align: center;">📝 Nuevo Usuario</h2>
+<div id="seccion-registro" class="auth-box oculto">
+    <div style="font-size:40px;">📝</div>
+    <h2>Registrar Usuario</h2>
     <div id="mensaje-reg" class="mensaje"></div>
-    <div>
-        <label>Usuario:</label><br>
-        <input type="text" id="nuevo-usuario" placeholder="Nombre de usuario">
+    <div style="text-align: left;">
+        <label><strong>Usuario:</strong></label><br>
+        <input type="text" id="nuevo-usuario" placeholder="Mínimo 3 caracteres">
     </div>
-    <div>
-        <label>Contraseña:</label><br>
-        <input type="password" id="nueva-pass" placeholder="Contraseña">
+    <div style="text-align: left; margin-top:10px;">
+        <label><strong>Contraseña:</strong></label><br>
+        <input type="password" id="nueva-pass" placeholder="Mínimo 4 caracteres">
     </div>
-    <div>
-        <label>Confirmar contraseña:</label><br>
+    <div style="text-align: left; margin-top:10px;">
+        <label><strong>Confirmar contraseña:</strong></label><br>
         <input type="password" id="confirma-pass" placeholder="Repite tu contraseña">
     </div>
     <br>
-    <button onclick="registrarUsuario()">✅ Crear cuenta</button>
-    <button onclick="cerrarRegistro()">← Volver</button>
+    <button class="btn-entrar" onclick="registrarUsuario()">✅ Crear cuenta</button>
+    <button class="btn-registrar" onclick="cerrarRegistro()">← Volver</button>
 </div>
 
 <!-- 🛒 SISTEMA PRINCIPAL -->
@@ -94,7 +106,6 @@
     </header>
 
     <div class="container">
-        <!-- 🧭 MENÚ DE NAVEGACIÓN -->
         <nav>
             <button class="activo" onclick="mostrarSeccion('ventas')">🛒 Ventas</button>
             <button onclick="mostrarSeccion('historial')">📊 Historial de Ventas</button>
@@ -102,20 +113,19 @@
             <button onclick="mostrarSeccion('nuevo-producto')">➕ Agregar Producto</button>
         </nav>
 
-        <!-- 🛒 SECCIÓN VENTAS -->
+        <!-- 🛒 VENTAS -->
         <div id="sec-ventas" class="seccion">
             <h2>📋 Lista de Productos</h2>
             <div class="grid" id="lista-productos"></div>
 
             <h2 style="margin-top:30px;">🛒 Ventana de Compras</h2>
-            <div id="carrito-vacio">El carrito está vacío. Agrega productos para empezar.</div>
+            <div id="carrito-vacio" style="color:#888; padding:15px; text-align:center;">El carrito está vacío. Agrega productos para empezar.</div>
             <div id="items-carrito"></div>
             <div class="total">Total: $<span id="total">0.00</span></div>
             <br>
             <button onclick="limpiarCarrito()" class="rojo">🗑️ Cancelar Venta</button>
             <button onclick="abrirModalPago()">💳 Cobrar</button>
 
-            <!-- 🧾 TICKET -->
             <div class="ticket" id="ticket">
                 <h3 style="text-align:center;">PANADERÍA Y PASTELERÍA</h3>
                 <p style="text-align:center;">Calle Ejemplo 123, CDMX<br>Tel: 55-1234-5678</p>
@@ -136,15 +146,15 @@
             </div>
         </div>
 
-        <!-- 💳 MODAL DE PAGO -->
+        <!-- 💳 MODAL PAGO -->
         <div id="modal-pago" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar-modal" onclick="cerrarModalPago()">&times;</span>
                 <h2>💰 Pago</h2>
                 <p style="font-size:18px; margin:15px 0;">Total a pagar: <strong>$<span id="modal-total"></span></strong></p>
                 <div>
-                    <label>Recibido del cliente:</label><br>
-                    <input type="number" id="pago-recibido" placeholder="0.00" oninput="calcularCambio()">
+                    <label><strong>Recibido del cliente:</strong></label><br>
+                    <input type="number" step="0.01" id="pago-recibido" placeholder="0.00" oninput="calcularCambio()">
                 </div>
                 <p style="font-size:16px; margin-top:15px;">Cambio: <strong>$<span id="pago-cambio">0.00</span></strong></p>
                 <br>
@@ -153,7 +163,7 @@
             </div>
         </div>
 
-        <!-- 📊 SECCIÓN HISTORIAL -->
+        <!-- 📊 HISTORIAL -->
         <div id="sec-historial" class="seccion oculto">
             <h2>📊 Historial de Ventas</h2>
             <div class="fecha-filtro">
@@ -179,7 +189,7 @@
             </table>
         </div>
 
-        <!-- 💰 SECCIÓN CIERRE DE CAJA -->
+        <!-- 💰 CIERRE DE CAJA -->
         <div id="sec-caja" class="seccion oculto">
             <h2>💰 Cierre de Caja</h2>
             <div class="resumen-caja">
@@ -202,7 +212,7 @@
             
             <div id="cierre-anterior" class="seccion" style="margin-top:30px; background:#f9f6f0;">
                 <h3>📑 Último Cierre</h3>
-                <div id="ultimo-cierre"></div>
+                <div id="ultimo-cierre" style="color:#888;">Sin cierres anteriores</div>
             </div>
         </div>
 
@@ -211,15 +221,15 @@
             <h2>➕ Agregar Producto Nuevo</h2>
             <div id="msg-producto" class="mensaje"></div>
             <div>
-                <label>Nombre del Producto:</label><br>
+                <label><strong>Nombre del Producto:</strong></label><br>
                 <input type="text" id="nuevo-nombre" placeholder="Ej: Concha de Chocolate">
             </div>
             <div>
-                <label>Precio:</label><br>
+                <label><strong>Precio:</strong></label><br>
                 <input type="number" step="0.01" id="nuevo-precio" placeholder="0.00">
             </div>
             <div>
-                <label>Categoría:</label><br>
+                <label><strong>Categoría:</strong></label><br>
                 <select id="nuevo-categoria">
                     <option value="Panadería">🥖 Panadería</option>
                     <option value="Pastelería">🎂 Pastelería</option>
@@ -253,42 +263,3 @@ let productos = [
     { codigo: "PAS006", nombre: "Gelatina Individual", precio: 25.00, categoria: "Pastelería" },
     { codigo: "PAS007", nombre: "Mousse de Limón", precio: 35.00, categoria: "Pastelería" }
 ];
-
-let carrito = [];
-let usuarioActivo = null;
-let numeroTicket = parseInt(localStorage.getItem('ultimoTicket') || '1');
-let ventas = JSON.parse(localStorage.getItem('historialVentas') || '[]');
-let cajaAbierta = JSON.parse(localStorage.getItem('cajaActual') || '{"fecha": null, "ventas": 0, "total": 0}');
-
-// ==================== USUARIOS ====================
-function obtenerUsuarios() {
-    return JSON.parse(localStorage.getItem('usuarios') || '{}');
-}
-
-function guardarUsuarios(usuarios) {
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-
-function mostrarRegistro() {
-    document.getElementById('seccion-auth').classList.add('oculto');
-    document.getElementById('seccion-registro').classList.remove('oculto');
-}
-
-function cerrarRegistro() {
-    document.getElementById('seccion-registro').classList.add('oculto');
-    document.getElementById('seccion-auth').classList.remove('oculto');
-}
-
-function registrarUsuario() {
-    const usuario = document.getElementById('nuevo-usuario').value.trim();
-    const pass = document.getElementById('nueva-pass').value;
-    const confirma = document.getElementById('confirma-pass').value;
-    const msg = document.getElementById('mensaje-reg');
-    const usuarios = obtenerUsuarios();
-    
-    if (!usuario || usuario.length < 3) {
-        msg.textContent = "⚠️ El usuario debe tener al menos 
-</script>
-
-</body>
-</html>

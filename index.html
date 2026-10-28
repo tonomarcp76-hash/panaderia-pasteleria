@@ -9,12 +9,17 @@
         body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        nav button { background: #6d4422; font-size: 14px; }
+        nav button.activo { background: #8b5a2b; border: 2px solid #f0d4b5; }
         .seccion { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         h2 { color: #8b5a2b; margin-bottom: 15px; border-bottom: 2px solid #f0d4b5; padding-bottom: 8px; }
         button { background: #8b5a2b; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin: 5px; font-size: 14px; }
         button:hover { background: #6d4422; }
         button.rojo { background: #c0392b; }
         button.rojo:hover { background: #a02a1c; }
+        button.verde { background: #27ae60; }
+        button.verde:hover { background: #1e8449; }
         input, select { padding: 8px; border: 1px solid #d4b89b; border-radius: 5px; margin: 5px; width: 100%; max-width: 300px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
         .producto { background: #fdf2e4; padding: 12px; border-radius: 8px; border-left: 4px solid #8b5a2b; }
@@ -27,6 +32,18 @@
         .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
         .exito { background: #d4edda; color: #155724; display: block; }
         .error { background: #f8d7da; color: #721c24; display: block; }
+        .tabla { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabla th, .tabla td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        .tabla th { background: #f0d4b5; color: #5a3e2b; }
+        .resumen-caja { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .caja-card { background: #fdf2e4; padding: 15px; border-radius: 8px; text-align: center; }
+        .caja-card h3 { font-size: 14px; color: #8b5a2b; margin-bottom: 5px; }
+        .caja-card .valor { font-size: 24px; font-weight: bold; }
+        .fecha-filtro { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 15px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-contenido { background: white; margin: 5% auto; padding: 25px; border-radius: 10px; max-width: 500px; position: relative; }
+        .cerrar-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #888; }
+        .cerrar-modal:hover { color: #000; }
     </style>
 </head>
 <body>
@@ -77,48 +94,149 @@
     </header>
 
     <div class="container">
-        <!-- 📋 PRODUCTOS -->
-        <div class="seccion">
+        <!-- 🧭 MENÚ DE NAVEGACIÓN -->
+        <nav>
+            <button class="activo" onclick="mostrarSeccion('ventas')">🛒 Ventas</button>
+            <button onclick="mostrarSeccion('historial')">📊 Historial de Ventas</button>
+            <button onclick="mostrarSeccion('caja')">💰 Cierre de Caja</button>
+            <button onclick="mostrarSeccion('nuevo-producto')">➕ Agregar Producto</button>
+        </nav>
+
+        <!-- 🛒 SECCIÓN VENTAS -->
+        <div id="sec-ventas" class="seccion">
             <h2>📋 Lista de Productos</h2>
             <div class="grid" id="lista-productos"></div>
-        </div>
 
-        <!-- 🛒 CARRITO -->
-        <div class="seccion">
-            <h2>🛒 Carrito</h2>
-            <div id="carrito-vacio">El carrito está vacío</div>
+            <h2 style="margin-top:30px;">🛒 Ventana de Compras</h2>
+            <div id="carrito-vacio">El carrito está vacío. Agrega productos para empezar.</div>
             <div id="items-carrito"></div>
             <div class="total">Total: $<span id="total">0.00</span></div>
             <br>
             <button onclick="limpiarCarrito()" class="rojo">🗑️ Cancelar Venta</button>
-            <button onclick="cobrar()">💳 Cobrar y Generar Ticket</button>
+            <button onclick="abrirModalPago()">💳 Cobrar</button>
+
+            <!-- 🧾 TICKET -->
+            <div class="ticket" id="ticket">
+                <h3 style="text-align:center;">PANADERÍA Y PASTELERÍA</h3>
+                <p style="text-align:center;">Calle Ejemplo 123, CDMX<br>Tel: 55-1234-5678</p>
+                <hr>
+                <p>Ticket Nº: <span id="t-num"></span></p>
+                <p>Fecha: <span id="t-fecha"></span></p>
+                <p>Cajero: <span id="t-cajero"></span></p>
+                <hr>
+                <div id="t-items"></div>
+                <hr>
+                <p class="fila-ticket"><strong>TOTAL: $<span id="t-total"></span></strong></p>
+                <p class="fila-ticket">Pago con: $<span id="t-pago"></span></p>
+                <p class="fila-ticket">Cambio: $<span id="t-cambio"></span></p>
+                <hr>
+                <p style="text-align:center;">¡Gracias por su compra!<br>Vuelva pronto</p>
+                <br>
+                <button onclick="window.print()">🖨️ Imprimir Ticket</button>
+            </div>
         </div>
 
-        <!-- 🧾 TICKET -->
-        <div class="seccion ticket" id="ticket">
-            <h3 style="text-align:center;">PANADERÍA Y PASTELERÍA</h3>
-            <p style="text-align:center;">Calle Ejemplo 123, CDMX<br>Tel: 55-1234-5678</p>
-            <hr>
-            <p>Ticket Nº: <span id="t-num"></span></p>
-            <p>Fecha: <span id="t-fecha"></span></p>
-            <p>Cajero: <span id="t-cajero"></span></p>
-            <hr>
-            <div id="t-items"></div>
-            <hr>
-            <p class="fila-ticket"><strong>TOTAL: $<span id="t-total"></span></strong></p>
-            <p class="fila-ticket">Pago con: $<span id="t-pago"></span></p>
-            <p class="fila-ticket">Cambio: $<span id="t-cambio"></span></p>
-            <hr>
-            <p style="text-align:center;">¡Gracias por su compra!<br>Vuelva pronto</p>
+        <!-- 💳 MODAL DE PAGO -->
+        <div id="modal-pago" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar-modal" onclick="cerrarModalPago()">&times;</span>
+                <h2>💰 Pago</h2>
+                <p style="font-size:18px; margin:15px 0;">Total a pagar: <strong>$<span id="modal-total"></span></strong></p>
+                <div>
+                    <label>Recibido del cliente:</label><br>
+                    <input type="number" id="pago-recibido" placeholder="0.00" oninput="calcularCambio()">
+                </div>
+                <p style="font-size:16px; margin-top:15px;">Cambio: <strong>$<span id="pago-cambio">0.00</span></strong></p>
+                <br>
+                <button onclick="confirmarVenta()" class="verde">✅ Confirmar Venta</button>
+                <button onclick="cerrarModalPago()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- 📊 SECCIÓN HISTORIAL -->
+        <div id="sec-historial" class="seccion oculto">
+            <h2>📊 Historial de Ventas</h2>
+            <div class="fecha-filtro">
+                <label>Desde:</label>
+                <input type="date" id="fecha-desde">
+                <label>Hasta:</label>
+                <input type="date" id="fecha-hasta">
+                <button onclick="filtrarHistorial()">🔍 Filtrar</button>
+                <button onclick="verTodoHistorial()">📋 Ver Todo</button>
+            </div>
+            <div id="historial-vacio" style="text-align:center; padding:30px; color:#888;">No hay ventas registradas aún</div>
+            <table class="tabla" id="tabla-historial" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Ticket Nº</th>
+                        <th>Fecha y Hora</th>
+                        <th>Cajero</th>
+                        <th>Total</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-historial"></tbody>
+            </table>
+        </div>
+
+        <!-- 💰 SECCIÓN CIERRE DE CAJA -->
+        <div id="sec-caja" class="seccion oculto">
+            <h2>💰 Cierre de Caja</h2>
+            <div class="resumen-caja">
+                <div class="caja-card">
+                    <h3>Ventas del Día</h3>
+                    <div class="valor" id="caja-ventas">0</div>
+                </div>
+                <div class="caja-card">
+                    <h3>Total en Caja</h3>
+                    <div class="valor" id="caja-total">$0.00</div>
+                </div>
+                <div class="caja-card">
+                    <h3>Fecha</h3>
+                    <div class="valor" id="caja-fecha" style="font-size:16px;"></div>
+                </div>
+            </div>
             <br>
-            <button onclick="window.print()">🖨️ Imprimir Ticket</button>
+            <button onclick="cerrarCaja()" class="rojo">🔒 Cerrar Caja del Día</button>
+            <button onclick="exportarCaja()">📄 Exportar Resumen</button>
+            
+            <div id="cierre-anterior" class="seccion" style="margin-top:30px; background:#f9f6f0;">
+                <h3>📑 Último Cierre</h3>
+                <div id="ultimo-cierre"></div>
+            </div>
+        </div>
+
+        <!-- ➕ AGREGAR PRODUCTO -->
+        <div id="sec-nuevo-producto" class="seccion oculto">
+            <h2>➕ Agregar Producto Nuevo</h2>
+            <div id="msg-producto" class="mensaje"></div>
+            <div>
+                <label>Nombre del Producto:</label><br>
+                <input type="text" id="nuevo-nombre" placeholder="Ej: Concha de Chocolate">
+            </div>
+            <div>
+                <label>Precio:</label><br>
+                <input type="number" step="0.01" id="nuevo-precio" placeholder="0.00">
+            </div>
+            <div>
+                <label>Categoría:</label><br>
+                <select id="nuevo-categoria">
+                    <option value="Panadería">🥖 Panadería</option>
+                    <option value="Pastelería">🎂 Pastelería</option>
+                    <option value="Bebidas">🥤 Bebidas</option>
+                    <option value="Otros">📦 Otros</option>
+                </select>
+            </div>
+            <br>
+            <button onclick="agregarProducto()">✅ Guardar Producto</button>
+            <button onclick="mostrarSeccion('ventas')">← Volver a Ventas</button>
         </div>
     </div>
 </div>
 
 <script>
-// ================== DATOS ==================
-const productos = [
+// ==================== DATOS INICIALES ====================
+let productos = [
     { codigo: "PAN001", nombre: "Concha", precio: 12.00, categoria: "Panadería" },
     { codigo: "PAN002", nombre: "Cuernito", precio: 10.00, categoria: "Panadería" },
     { codigo: "PAN003", nombre: "Oreja", precio: 10.00, categoria: "Panadería" },
@@ -138,9 +256,11 @@ const productos = [
 
 let carrito = [];
 let usuarioActivo = null;
-let numeroTicket = 1;
+let numeroTicket = parseInt(localStorage.getItem('ultimoTicket') || '1');
+let ventas = JSON.parse(localStorage.getItem('historialVentas') || '[]');
+let cajaAbierta = JSON.parse(localStorage.getItem('cajaActual') || '{"fecha": null, "ventas": 0, "total": 0}');
 
-// ================== USUARIOS ==================
+// ==================== USUARIOS ====================
 function obtenerUsuarios() {
     return JSON.parse(localStorage.getItem('usuarios') || '{}');
 }
@@ -167,188 +287,7 @@ function registrarUsuario() {
     const usuarios = obtenerUsuarios();
     
     if (!usuario || usuario.length < 3) {
-        msg.textContent = "⚠️ El usuario debe tener al menos 3 caracteres";
-        msg.className = "mensaje error";
-        return;
-    }
-    if (pass.length < 4) {
-        msg.textContent = "⚠️ La contraseña debe tener al menos 4 caracteres";
-        msg.className = "mensaje error";
-        return;
-    }
-    if (pass !== confirma) {
-        msg.textContent = "⚠️ Las contraseñas no coinciden";
-        msg.className = "mensaje error";
-        return;
-    }
-    if (usuarios[usuario]) {
-        msg.textContent = "⚠️ Ese nombre de usuario ya existe";
-        msg.className = "mensaje error";
-        return;
-    }
-    
-    usuarios[usuario] = pass;
-    guardarUsuarios(usuarios);
-    msg.textContent = "✅ Usuario creado con éxito. ¡Inicia sesión!";
-    msg.className = "mensaje exito";
-    setTimeout(cerrarRegistro, 1500);
-}
-
-function iniciarSesion() {
-    const usuario = document.getElementById('usuario').value.trim();
-    const pass = document.getElementById('contrasena').value;
-    const msg = document.getElementById('mensaje-auth');
-    const usuarios = obtenerUsuarios();
-    
-    if (!Object.keys(usuarios).length) {
-        msg.textContent = "⚠️ No hay usuarios registrados. Regístrate primero.";
-        msg.className = "mensaje error";
-        return;
-    }
-    
-    if (usuarios[usuario] && usuarios[usuario] === pass) {
-        usuarioActivo = usuario;
-        document.getElementById('nombre-usuario').textContent = usuario;
-        document.getElementById('seccion-auth').classList.add('oculto');
-        document.getElementById('sistema').classList.remove('oculto');
-        cargarProductos();
-    } else {
-        msg.textContent = "❌ Usuario o contraseña incorrectos";
-        msg.className = "mensaje error";
-    }
-}
-
-function cerrarSesion() {
-    usuarioActivo = null;
-    carrito = [];
-    document.getElementById('sistema').classList.add('oculto');
-    document.getElementById('seccion-auth').classList.remove('oculto');
-    document.getElementById('ticket').style.display = 'none';
-}
-
-// ================== PRODUCTOS ==================
-function cargarProductos() {
-    const contenedor = document.getElementById('lista-productos');
-    contenedor.innerHTML = '';
-    
-    productos.forEach(prod => {
-        contenedor.innerHTML += `
-            <div class="producto">
-                <strong>${prod.nombre}</strong><br>
-                <small>${prod.categoria}</small><br>
-                <strong>$${prod.precio.toFixed(2)}</strong><br>
-                <button onclick="agregarAlCarrito('${prod.codigo}')">➕ Agregar</button>
-            </div>
-        `;
-    });
-}
-
-// ================== CARRITO ==================
-function agregarAlCarrito(codigo) {
-    const prod = productos.find(p => p.codigo === codigo);
-    const existente = carrito.find(c => c.codigo === codigo);
-    
-    if (existente) {
-        existente.cantidad++;
-    } else {
-        carrito.push({ ...prod, cantidad: 1 });
-    }
-    actualizarCarrito();
-}
-
-function actualizarCarrito() {
-    const contenedor = document.getElementById('items-carrito');
-    const vacio = document.getElementById('carrito-vacio');
-    const totalEl = document.getElementById('total');
-    
-    if (carrito.length === 0) {
-        vacio.style.display = 'block';
-        contenedor.innerHTML = '';
-        totalEl.textContent = '0.00';
-        return;
-    }
-    
-    vacio.style.display = 'none';
-    contenedor.innerHTML = '';
-    let total = 0;
-    
-    carrito.forEach((item, idx) => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-        contenedor.innerHTML += `
-            <div class="carrito-item">
-                <span>${item.cantidad}x ${item.nombre}</span>
-                <span>$${subtotal.toFixed(2)} <button style="padding:2px 5px; font-size:10px;" onclick="quitarDelCarrito(${idx})">✕</button></span>
-            </div>
-        `;
-    });
-    
-    totalEl.textContent = total.toFixed(2);
-}
-
-function quitarDelCarrito(idx) {
-    carrito[idx].cantidad--;
-    if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
-    actualizarCarrito();
-}
-
-function limpiarCarrito() {
-    carrito = [];
-    actualizarCarrito();
-    document.getElementById('ticket').style.display = 'none';
-}
-
-// ================== COBRAR Y TICKET ==================
-function cobrar() {
-    if (carrito.length === 0) {
-        alert("⚠️ El carrito está vacío");
-        return;
-    }
-    
-    const total = carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
-    const recibido = parseFloat(prompt(`Total a pagar: $${total.toFixed(2)}\nEfectivo recibido: $`));
-    
-    if (isNaN(recibido) || recibido < total) {
-        alert("⚠️ Cantidad inválida");
-        return;
-    }
-    
-    const cambio = recibido - total;
-    const fecha = new Date().toLocaleString('es-MX');
-    
-    // Mostrar ticket
-    document.getElementById('t-num').textContent = String(numeroTicket).padStart(4, '0');
-    document.getElementById('t-fecha').textContent = fecha;
-    document.getElementById('t-cajero').textContent = usuarioActivo;
-    document.getElementById('t-total').textContent = total.toFixed(2);
-    document.getElementById('t-pago').textContent = recibido.toFixed(2);
-    document.getElementById('t-cambio').textContent = cambio.toFixed(2);
-    
-    const itemsTicket = document.getElementById('t-items');
-    itemsTicket.innerHTML = '';
-    carrito.forEach(item => {
-        itemsTicket.innerHTML += `
-            <p class="fila-ticket">
-                <span>${item.cantidad}x ${item.nombre}</span>
-                <span>$${(item.precio * item.cantidad).toFixed(2)}</span>
-            </p>
-        `;
-    });
-    
-    document.getElementById('ticket').style.display = 'block';
-    numeroTicket++;
-    carrito = [];
-    actualizarCarrito();
-}
-
-// Verificar si hay usuarios al cargar
-window.onload = function() {
-    const usuarios = obtenerUsuarios();
-    if (Object.keys(usuarios).length === 0) {
-        document.getElementById('mensaje-auth').textContent = "ℹ️ No hay cuentas. Regístrate como primer usuario.";
-        document.getElementById('mensaje-auth').className = "mensaje exito";
-    }
-};
+        msg.textContent = "⚠️ El usuario debe tener al menos 
 </script>
 
 </body>

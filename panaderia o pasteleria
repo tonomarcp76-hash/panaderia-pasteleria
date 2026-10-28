@@ -3,340 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍞 POS - Panadería & Pastelería</title>
+    <title>🍞 Panadería y Pastelería - POS</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-        body{background:#fdf6e3;padding:20px;max-width:1000px;margin:0 auto;}
-        h1{text-align:center;background:#8b4513;color:white;padding:20px;border-radius:8px;margin-bottom:20px;}
-        
-        .menu{display:flex;justify-content:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-        .btn-menu{padding:10px 16px;border:none;border-radius:6px;font-size:14px;cursor:pointer;background:#d2691e;color:white;transition:all 0.2s;}
-        .btn-menu.activo{background:#27ae60;transform:scale(1.05);}
-        .btn-menu:hover{opacity:0.9;}
-        
-        .pagina{display:none;background:white;padding:25px;border-radius:8px;box-shadow:0 2px 8px #0002;}
-        .pagina.activa{display:block;}
-        h2{color:#8b4513;margin-bottom:20px;text-align:center;}
-        
-        button{padding:8px 15px;border:none;border-radius:4px;cursor:pointer;font-size:14px;}
-        .btn-verde{background:#27ae60;color:white;}
-        .btn-rojo{background:#e74c3c;color:white;}
-        .btn-azul{background:#3498db;color:white;}
-        .btn-naranja{background:#f39c12;color:white;}
-        button:hover{opacity:0.85;}
-        
-        table{width:100%;border-collapse:collapse;margin:15px 0;}
-        th,td{padding:10px;text-align:left;border-bottom:1px solid #ddd;}
-        th{background:#8b4513;color:white;}
-        
-        .total{text-align:right;font-size:24px;font-weight:bold;color:#27ae60;margin-top:15px;}
-        .acciones{text-align:center;margin-top:20px;}
-        .vacio{text-align:center;color:#888;padding:30px;}
-        
-        .etiqueta-cat{
-            display:inline-block;padding:3px 8px;border-radius:12px;font-size:12px;color:white;
-        }
-        .cat-pan{background:#deb887;}
-        .cat-pastel{background:#ff69b4;}
-        .cat-galleta{background:#f0e68c;color:#333;}
-        .cat-bebida{background:#87ceeb;color:#333;}
-        .cat-otro{background:#cd853f;}
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .seccion { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { color: #8b5a2b; margin-bottom: 15px; border-bottom: 2px solid #f0d4b5; padding-bottom: 8px; }
+        button { background: #8b5a2b; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin: 5px; font-size: 14px; }
+        button:hover { background: #6d4422; }
+        button.rojo { background: #c0392b; }
+        button.rojo:hover { background: #a02a1c; }
+        input, select { padding: 8px; border: 1px solid #d4b89b; border-radius: 5px; margin: 5px; width: 100%; max-width: 300px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .producto { background: #fdf2e4; padding: 12px; border-radius: 8px; border-left: 4px solid #8b5a2b; }
+        .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ddd; }
+        .total { font-size: 22px; font-weight: bold; text-align: right; margin-top: 15px; color: #8b5a2b; }
+        .ticket { background: #fff; border: 1px dashed #888; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 13px; display: none; }
+        .fila-ticket { display: flex; justify-content: space-between; padding: 2px 0; }
+        .auth-box { max-width: 400px; margin: 100px auto; }
+        .oculto { display: none !important; }
+        .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
+        .exito { background: #d4edda; color: #155724; display: block; }
+        .error { background: #f8d7da; color: #721c24; display: block; }
     </style>
 </head>
 <body>
 
-    <h1>🍞 POS - Panadería & Pastelería 🎂</h1>
-
-    <div class="menu">
-        <button class="btn-menu activo" id="btn-ventas" onclick="mostrarPagina('ventas')">🧾 Ventas</button>
-        <button class="btn-menu" id="btn-productos" onclick="mostrarPagina('productos')">📦 Productos</button>
-        <button class="btn-menu" id="btn-compras" onclick="mostrarPagina('compras')">📥 Entradas de Mercancía</button>
-        <button class="btn-menu" id="btn-reportes" onclick="mostrarPagina('reportes')">📊 Reportes</button>
-        <button class="btn-menu" id="btn-cierre" onclick="mostrarPagina('cierre')">🔒 Cierre de Caja</button>
+<!-- 🔐 INICIO DE SESIÓN -->
+<div id="seccion-auth" class="seccion auth-box">
+    <h2 style="text-align: center;">🥐 Iniciar Sesión</h2>
+    <div id="mensaje-auth" class="mensaje"></div>
+    <div>
+        <label>Usuario:</label><br>
+        <input type="text" id="usuario" placeholder="Escribe tu usuario">
     </div>
+    <div>
+        <label>Contraseña:</label><br>
+        <input type="password" id="contrasena" placeholder="Escribe tu contraseña">
+    </div>
+    <br>
+    <button onclick="iniciarSesion()">🔑 Entrar</button>
+    <button onclick="mostrarRegistro()">📝 Registrarse</button>
+</div>
 
-    <!-- ====== VENTAS ====== -->
-    <div id="ventas" class="pagina activa">
-        <h2>🧾 Nueva Venta</h2>
-        <button class="btn-verde" onclick="agregarItem()">➕ Agregar Producto</button>
-        <table>
-            <thead>
-                <tr><th>Producto</th><th>Cantidad</th><th>Unidad</th><th>Precio</th><th>Subtotal</th><th>Eliminar</th></tr>
-            </thead>
-            <tbody id="cuerpoVenta"></tbody>
-        </table>
-        <div class="total">Total: $<span id="totalVenta">0.00</span></div>
-        <div class="acciones">
-            <button class="btn-rojo" onclick="limpiarVenta()">🗑️ Limpiar</button>
-            <button class="btn-verde" onclick="cobrar()">✅ Cobrar</button>
+<!-- 📝 REGISTRO -->
+<div id="seccion-registro" class="seccion auth-box oculto">
+    <h2 style="text-align: center;">📝 Nuevo Usuario</h2>
+    <div id="mensaje-reg" class="mensaje"></div>
+    <div>
+        <label>Usuario:</label><br>
+        <input type="text" id="nuevo-usuario" placeholder="Nombre de usuario">
+    </div>
+    <div>
+        <label>Contraseña:</label><br>
+        <input type="password" id="nueva-pass" placeholder="Contraseña">
+    </div>
+    <div>
+        <label>Confirmar contraseña:</label><br>
+        <input type="password" id="confirma-pass" placeholder="Repite tu contraseña">
+    </div>
+    <br>
+    <button onclick="registrarUsuario()">✅ Crear cuenta</button>
+    <button onclick="cerrarRegistro()">← Volver</button>
+</div>
+
+<!-- 🛒 SISTEMA PRINCIPAL -->
+<div id="sistema" class="oculto">
+    <header>
+        <h1>🥖 PANADERÍA Y PASTELERÍA</h1>
+        <p>Bienvenido, <span id="nombre-usuario"></span> | <button style="background:#5a3e2b; padding:5px 10px; font-size:12px;" onclick="cerrarSesion()">Cerrar sesión</button></p>
+    </header>
+
+    <div class="container">
+        <!-- 📋 PRODUCTOS -->
+        <div class="seccion">
+            <h2>📋 Lista de Productos</h2>
+            <div class="grid" id="lista-productos"></div>
+        </div>
+
+        <!-- 🛒 CARRITO -->
+        <div class="seccion">
+            <h2>🛒 Carrito</h2>
+            <div id="carrito-vacio">El carrito está vacío</div>
+            <div id="items-carrito"></div>
+            <div class="total">Total: $<span id="total">0.00</span></div>
+            <br>
+            <button onclick="limpiarCarrito()" class="rojo">🗑️ Cancelar Venta</button>
+            <button onclick="cobrar()">💳 Cobrar y Generar Ticket</button>
+        </div>
+
+        <!-- 🧾 TICKET -->
+        <div class="seccion ticket" id="ticket">
+            <h3 style="text-align:center;">PANADERÍA Y PASTELERÍA</h3>
+            <p style="text-align:center;">Calle Ejemplo 123, CDMX<br>Tel: 55-1234-5678</p>
+            <hr>
+            <p>Ticket Nº: <span id="t-num"></span></p>
+            <p>Fecha: <span id="t-fecha"></span></p>
+            <p>Cajero: <span id="t-cajero"></span></p>
+            <hr>
+            <div id="t-items"></div>
+            <hr>
+            <p class="fila-ticket"><strong>TOTAL: $<span id="t-total"></span></strong></p>
+            <p class="fila-ticket">Pago con: $<span id="t-pago"></span></p>
+            <p class="fila-ticket">Cambio: $<span id="t-cambio"></span></p>
+            <hr>
+            <p style="text-align:center;">¡Gracias por su compra!<br>Vuelva pronto</p>
+            <br>
+            <button onclick="window.print()">🖨️ Imprimir Ticket</button>
         </div>
     </div>
-
-    <!-- ====== PRODUCTOS ====== -->
-    <div id="productos" class="pagina">
-        <h2>📦 Inventario de Productos</h2>
-        <button class="btn-verde" onclick="agregarProducto()">➕ Nuevo Producto</button>
-        <table>
-            <thead>
-                <tr><th>Nombre</th><th>Categoría</th><th>Precio Venta</th><th>Stock</th><th>Unidad</th><th>Acciones</th></tr>
-            </thead>
-            <tbody id="cuerpoProductos"></tbody>
-        </table>
-    </div>
-
-    <!-- ====== COMPRAS / ENTRADAS ====== -->
-    <div id="compras" class="pagina">
-        <h2>📥 Entradas de Mercancía</h2>
-        <button class="btn-verde" onclick="agregarCompra()">➕ Registrar Entrada</button>
-        <table>
-            <thead>
-                <tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Costo Unitario</th><th>Total</th></tr>
-            </thead>
-            <tbody id="cuerpoCompras">
-                <tr><td colspan="5" class="vacio">No hay entradas registradas</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- ====== REPORTES ====== -->
-    <div id="reportes" class="pagina">
-        <h2>📊 Reportes</h2>
-        <div style="display:grid;gap:15px;margin:20px 0;">
-            <div style="background:#fff3cd;padding:20px;border-radius:8px;">
-                <h3>💰 Ventas del Día</h3>
-                <p style="font-size:28px;font-weight:bold;color:#27ae60;margin-top:10px;">$<span id="rep-ventasDia">0.00</span></p>
-            </div>
-            <div style="background:#d4edda;padding:20px;border-radius:8px;">
-                <h3>📈 Total Ventas (Acumulado)</h3>
-                <p style="font-size:28px;font-weight:bold;color:#27ae60;margin-top:10px;">$<span id="rep-totalVentas">0.00</span></p>
-            </div>
-            <div style="background:#e3f2fd;padding:20px;border-radius:8px;">
-                <h3>📦 Productos Activos</h3>
-                <p style="font-size:28px;font-weight:bold;color:#3498db;margin-top:10px;"><span id="rep-totalProductos">0</span></p>
-            </div>
-            <div style="background:#fce4ec;padding:20px;border-radius:8px;">
-                <h3>📥 Inversión / Compras</h3>
-                <p style="font-size:28px;font-weight:bold;color:#e91e63;margin-top:10px;">$<span id="rep-totalCompras">0.00</span></p>
-            </div>
-        </div>
-        <div class="acciones">
-            <button class="btn-azul" onclick="actualizarReportes()">🔄 Actualizar</button>
-        </div>
-    </div>
-
-    <!-- ====== CIERRE DE CAJA ====== -->
-    <div id="cierre" class="pagina">
-        <h2>🔒 Cierre de Caja</h2>
-        <div style="font-size:18px;line-height:2.2;">
-            <p><strong>Fecha:</strong> <span id="fecha"></span></p>
-            <p><strong>Ventas realizadas hoy:</strong> <span id="ventasHoy">0</span></p>
-            <p><strong>Total vendido hoy:</strong> $<span id="totalHoy">0.00</span></p>
-            <p><strong>Total en Caja:</strong> $<span id="cajaTotal">0.00</span></p>
-            <hr style="margin:15px 0;border:none;border-top:2px dashed #ddd;">
-            <p style="font-size:20px;"><strong>Saldo Final:</strong> <span style="color:#27ae60;font-weight:bold;font-size:26px;">$<span id="saldoFinal">0.00</span></span></p>
-        </div>
-        <div class="acciones">
-            <button class="btn-naranja" onclick="cerrarParcial()">📌 Cierre Parcial</button>
-            <button class="btn-rojo" onclick="cerrarCajaTotal()">🔒 Cierre Total</button>
-        </div>
-    </div>
+</div>
 
 <script>
-// ===== CATEGORÍAS DE PANADERÍA =====
-const categorias = ["Pan Dulce", "Pan Salado", "Pasteles", "Galletas", "Bebidas", "Otros"];
-const unidades = ["pieza", "kg", "docena", "media docena", "caja", "litro"];
+// ================== DATOS ==================
+const productos = [
+    { codigo: "PAN001", nombre: "Concha", precio: 12.00, categoria: "Panadería" },
+    { codigo: "PAN002", nombre: "Cuernito", precio: 10.00, categoria: "Panadería" },
+    { codigo: "PAN003", nombre: "Oreja", precio: 10.00, categoria: "Panadería" },
+    { codigo: "PAN004", nombre: "Bolillo", precio: 6.00, categoria: "Panadería" },
+    { codigo: "PAN005", nombre: "Telera", precio: 7.00, categoria: "Panadería" },
+    { codigo: "PAN006", nombre: "Roles de Canela", precio: 15.00, categoria: "Panadería" },
+    { codigo: "PAN007", nombre: "Empanada de Piña", precio: 12.00, categoria: "Panadería" },
+    { codigo: "PAN008", nombre: "Empanada de Carne", precio: 15.00, categoria: "Panadería" },
+    { codigo: "PAS001", nombre: "Rebanada Pastel 3 Leches", precio: 55.00, categoria: "Pastelería" },
+    { codigo: "PAS002", nombre: "Rebanada Pastel Chocolate", precio: 50.00, categoria: "Pastelería" },
+    { codigo: "PAS003", nombre: "Rebanada Pastel Fresa", precio: 48.00, categoria: "Pastelería" },
+    { codigo: "PAS004", nombre: "Pay de Queso Rebanada", precio: 45.00, categoria: "Pastelería" },
+    { codigo: "PAS005", nombre: "Pastel Completo 3 Leches", precio: 550.00, categoria: "Pastelería" },
+    { codigo: "PAS006", nombre: "Gelatina Individual", precio: 25.00, categoria: "Pastelería" },
+    { codigo: "PAS007", nombre: "Mousse de Limón", precio: 35.00, categoria: "Pastelería" }
+];
 
-// ===== DATOS =====
-let productos = JSON.parse(localStorage.getItem('misProductos')) || [];
-let compras = JSON.parse(localStorage.getItem('misCompras')) || [];
 let carrito = [];
-let totalCaja = parseFloat(localStorage.getItem('totalCaja')) || 0;
-let totalVentasAcumulado = parseFloat(localStorage.getItem('totalVentasAcumulado')) || 0;
-let ventasHoy = parseInt(localStorage.getItem('ventasHoy')) || 0;
-let totalVentaDia = parseFloat(localStorage.getItem('totalVentaDia')) || 0;
+let usuarioActivo = null;
+let numeroTicket = 1;
 
-// ===== FECHA =====
-document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-MX',{
-    weekday:'long',year:'numeric',month:'long',day:'numeric'
-});
-
-// ===== INICIALIZAR =====
-actualizarTablaProductos();
-actualizarTablaCompras();
-actualizarReportes();
-actualizarCierre();
-
-// ===== CAMBIAR PÁGINA =====
-function mostrarPagina(nombre){
-    document.querySelectorAll('.btn-menu').forEach(boton => boton.classList.remove('activo'));
-    document.querySelectorAll('.pagina').forEach(pagina => pagina.classList.remove('activa'));
-    document.getElementById('btn-' + nombre).classList.add('activo');
-    document.getElementById(nombre).classList.add('activa');
-    if(nombre === 'reportes') actualizarReportes();
-    if(nombre === 'cierre') actualizarCierre();
+// ================== USUARIOS ==================
+function obtenerUsuarios() {
+    return JSON.parse(localStorage.getItem('usuarios') || '{}');
 }
 
-// ===== OBTENER CLASE DE CATEGORÍA =====
-function claseCategoria(cat){
-    switch(cat){
-        case "Pan Dulce": case "Pan Salado": return "etiqueta-cat cat-pan";
-        case "Pasteles": return "etiqueta-cat cat-pastel";
-        case "Galletas": return "etiqueta-cat cat-galleta";
-        case "Bebidas": return "etiqueta-cat cat-bebida";
-        default: return "etiqueta-cat cat-otro";
-    }
+function guardarUsuarios(usuarios) {
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
 }
 
-// ====== PRODUCTOS ======
-function agregarProducto(){
-    let nombre = prompt('Nombre del producto:\nEj: Concha, Bolillo, Pastel de Chocolate...');
-    if(!nombre) return;
-    
-    let catLista = categorias.map((c,i) => `${i+1}. ${c}`).join('\n');
-    let catIdx = parseInt(prompt(`Categoría:\n${catLista}`)) - 1;
-    if(isNaN(catIdx) || catIdx < 0 || catIdx >= categorias.length) return;
-    let categoria = categorias[catIdx];
-    
-    let precio = parseFloat(prompt('Precio de venta por unidad:'));
-    if(isNaN(precio) || precio <= 0){alert('Precio inválido');return;}
-    
-    let costo = parseFloat(prompt('Costo de producción/compra:')) || 0;
-    
-    let uniLista = unidades.map((u,i) => `${i+1}. ${u}`).join('\n');
-    let uniIdx = parseInt(prompt(`Unidad de venta:\n${uniLista}`)) - 1;
-    if(isNaN(uniIdx) || uniIdx < 0 || uniIdx >= unidades.length) return;
-    let unidad = unidades[uniIdx];
-    
-    let stock = parseFloat(prompt(`Cantidad en inventario (en ${unidad}):`));
-    if(isNaN(stock) || stock < 0){alert('Cantidad inválida');return;}
-    
-    productos.push({nombre, categoria, precio, costo, stock, unidad});
-    guardarProductos();
-    actualizarTablaProductos();
-    alert(`✅ Producto agregado:\n${nombre} — ${categoria}\n$${precio.toFixed(2)} / ${unidad}`);
+function mostrarRegistro() {
+    document.getElementById('seccion-auth').classList.add('oculto');
+    document.getElementById('seccion-registro').classList.remove('oculto');
 }
 
-function guardarProductos(){
-    localStorage.setItem('misProductos', JSON.stringify(productos));
+function cerrarRegistro() {
+    document.getElementById('seccion-registro').classList.add('oculto');
+    document.getElementById('seccion-auth').classList.remove('oculto');
 }
 
-function actualizarTablaProductos(){
-    let cuerpo = document.getElementById('cuerpoProductos');
-    cuerpo.innerHTML = '';
-    if(productos.length === 0){
-        cuerpo.innerHTML = '<tr><td colspan="6" class="vacio">No hay productos registrados</td></tr>';
+function registrarUsuario() {
+    const usuario = document.getElementById('nuevo-usuario').value.trim();
+    const pass = document.getElementById('nueva-pass').value;
+    const confirma = document.getElementById('confirma-pass').value;
+    const msg = document.getElementById('mensaje-reg');
+    const usuarios = obtenerUsuarios();
+    
+    if (!usuario || usuario.length < 3) {
+        msg.textContent = "⚠️ El usuario debe tener al menos 3 caracteres";
+        msg.className = "mensaje error";
         return;
     }
-    productos.forEach((p, i) => {
-        cuerpo.innerHTML += `
-            <tr>
-                <td><strong>${p.nombre}</strong></td>
-                <td><span class="${claseCategoria(p.categoria)}">${p.categoria}</span></td>
-                <td>$${p.precio.toFixed(2)}</td>
-                <td>${p.stock}</td>
-                <td>${p.unidad}</td>
-                <td><button class="btn-rojo" onclick="eliminarProducto(${i})">Eliminar</button></td>
-            </tr>
+    if (pass.length < 4) {
+        msg.textContent = "⚠️ La contraseña debe tener al menos 4 caracteres";
+        msg.className = "mensaje error";
+        return;
+    }
+    if (pass !== confirma) {
+        msg.textContent = "⚠️ Las contraseñas no coinciden";
+        msg.className = "mensaje error";
+        return;
+    }
+    if (usuarios[usuario]) {
+        msg.textContent = "⚠️ Ese nombre de usuario ya existe";
+        msg.className = "mensaje error";
+        return;
+    }
+    
+    usuarios[usuario] = pass;
+    guardarUsuarios(usuarios);
+    msg.textContent = "✅ Usuario creado con éxito. ¡Inicia sesión!";
+    msg.className = "mensaje exito";
+    setTimeout(cerrarRegistro, 1500);
+}
+
+function iniciarSesion() {
+    const usuario = document.getElementById('usuario').value.trim();
+    const pass = document.getElementById('contrasena').value;
+    const msg = document.getElementById('mensaje-auth');
+    const usuarios = obtenerUsuarios();
+    
+    if (!Object.keys(usuarios).length) {
+        msg.textContent = "⚠️ No hay usuarios registrados. Regístrate primero.";
+        msg.className = "mensaje error";
+        return;
+    }
+    
+    if (usuarios[usuario] && usuarios[usuario] === pass) {
+        usuarioActivo = usuario;
+        document.getElementById('nombre-usuario').textContent = usuario;
+        document.getElementById('seccion-auth').classList.add('oculto');
+        document.getElementById('sistema').classList.remove('oculto');
+        cargarProductos();
+    } else {
+        msg.textContent = "❌ Usuario o contraseña incorrectos";
+        msg.className = "mensaje error";
+    }
+}
+
+function cerrarSesion() {
+    usuarioActivo = null;
+    carrito = [];
+    document.getElementById('sistema').classList.add('oculto');
+    document.getElementById('seccion-auth').classList.remove('oculto');
+    document.getElementById('ticket').style.display = 'none';
+}
+
+// ================== PRODUCTOS ==================
+function cargarProductos() {
+    const contenedor = document.getElementById('lista-productos');
+    contenedor.innerHTML = '';
+    
+    productos.forEach(prod => {
+        contenedor.innerHTML += `
+            <div class="producto">
+                <strong>${prod.nombre}</strong><br>
+                <small>${prod.categoria}</small><br>
+                <strong>$${prod.precio.toFixed(2)}</strong><br>
+                <button onclick="agregarAlCarrito('${prod.codigo}')">➕ Agregar</button>
+            </div>
         `;
     });
 }
 
-function eliminarProducto(i){
-    if(confirm('¿Eliminar este producto del inventario?')){
-        productos.splice(i, 1);
-        guardarProductos();
-        actualizarTablaProductos();
+// ================== CARRITO ==================
+function agregarAlCarrito(codigo) {
+    const prod = productos.find(p => p.codigo === codigo);
+    const existente = carrito.find(c => c.codigo === codigo);
+    
+    if (existente) {
+        existente.cantidad++;
+    } else {
+        carrito.push({ ...prod, cantidad: 1 });
     }
+    actualizarCarrito();
 }
 
-// ====== COMPRAS / ENTRADAS ======
-function agregarCompra(){
-    if(productos.length === 0){alert('Primero registra productos');return;}
-    let lista = productos.map((p, i) => `${i+1}. ${p.nombre} — ${p.categoria}`).join('\n');
-    let idx = parseInt(prompt('Selecciona producto:\n'+lista)) - 1;
-    if(isNaN(idx) || idx < 0 || idx >= productos.length) return;
+function actualizarCarrito() {
+    const contenedor = document.getElementById('items-carrito');
+    const vacio = document.getElementById('carrito-vacio');
+    const totalEl = document.getElementById('total');
     
-    let cant = parseFloat(prompt(`Cantidad recibida (en ${productos[idx].unidad}):`));
-    if(isNaN(cant) || cant <= 0){alert('Cantidad inválida');return;}
-    
-    let costo = parseFloat(prompt('Costo unitario:'));
-    if(isNaN(costo) || costo <= 0){alert('Costo inválido');return;}
-    
-    productos[idx].stock += cant;
-    guardarProductos();
-    
-    let fecha = new Date().toLocaleDateString('es-MX');
-    compras.unshift({fecha, nombre: productos[idx].nombre, cantidad: cant, unidad: productos[idx].unidad, costo: costo, total: cant * costo});
-    localStorage.setItem('misCompras', JSON.stringify(compras));
-    
-    actualizarTablaCompras();
-    actualizarReportes();
-    alert(`✅ Entrada registrada:\n+${cant} ${productos[idx].unidad} de ${productos[idx].nombre}`);
-}
-
-function actualizarTablaCompras(){
-    let cuerpo = document.getElementById('cuerpoCompras');
-    cuerpo.innerHTML = '';
-    if(compras.length === 0){
-        cuerpo.innerHTML = '<tr><td colspan="5" class="vacio">No hay entradas registradas</td></tr>';
+    if (carrito.length === 0) {
+        vacio.style.display = 'block';
+        contenedor.innerHTML = '';
+        totalEl.textContent = '0.00';
         return;
     }
-    compras.forEach(c => {
-        cuerpo.innerHTML += `
-            <tr>
-                <td>${c.fecha}</td>
-                <td>${c.nombre}</td>
-                <td>${c.cantidad} ${c.unidad || ''}</td>
-                <td>$${c.costo.toFixed(2)}</td>
-                <td>$${c.total.toFixed(2)}</td>
-            </tr>
-        `;
-    });
-}
-
-// ====== VENTAS ======
-function agregarItem(){
-    if(productos.length === 0){alert('Primero registra productos');return;}
-    let lista = productos.map((p, i) => `${i+1}. ${p.nombre} — $${p.precio.toFixed(2)} / ${p.unidad}`).join('\n');
-    let idx = parseInt(prompt('Selecciona producto:\n'+lista)) - 1;
-    if(isNaN(idx) || idx < 0 || idx >= productos.length) return;
     
-    let cant = parseFloat(prompt(`Cantidad a vender (${productos[idx].unidad}):`));
-    if(isNaN(cant) || cant <= 0){alert('Cantidad inválida');return;}
-    if(cant > productos[idx].stock){alert(`⚠️ Stock insuficiente\nDisponible: ${productos[idx].stock} ${productos[idx].unidad}`);return;}
-    
-    carrito.push({
-        nombre: productos[idx].nombre, 
-        cantidad: cant, 
-        precio: productos[idx].precio, 
-        unidad: productos[idx].unidad,
-        indice: idx
-    });
-    actualizarTablaVenta();
-}
-
-function actualizarTablaVenta(){
-    let cuerpo = document.getElementById('cuerpoVenta');
-    cuerpo.innerHTML = '';
+    vacio.style.display = 'none';
+    contenedor.innerHTML = '';
     let total = 0;
-    carrito.forEach((item, i) => {
-        let subt = item.cantidad * item.precio;
-        total += subt;
-        cuerpo.innerHTML += `
-            <tr>
-                <td><strong>${item.nombre}</strong></td>
-                <td>${item.cantidad}</td>
-                <td>${item.unidad}</td>
-                <td>$${item.precio.toFixed(2)}</td>
-                <td>$${subt.toFixed(2)}</td>
-                <td><button class="btn-rojo" onclick="quitarItem(${i})">X</button></td>
-            </tr>
+    
+    carrito.forEach((item, idx) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        contenedor.innerHTML += `
+            <div class="carrito-item">
+                <span>${item.cantidad}x ${item.nombre}</span>
+                <span>$${subtotal.toFixed(2)} <button style="padding:2px 5px; font-size:10px;" onclick="quitarDelCarrito(${idx})">✕</button></span>
+            </div>
         `;
     });
-    document.getElementById('totalVenta').textContent = total.toFixed(2);
+    
+    totalEl.textContent = total.toFixed(2);
 }
 
-function quitarItem(i){
-    carrito.splice(i, 1);
-    actualizarTablaVenta();
+function quitarDelCarrito(idx) {
+    carrito[idx].cantidad--;
+    if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
+    actualizarCarrito();
 }
+
+function limpiarCarrito() {
+    carrito = [];
+    actualizarCarrito();
+    document.getElementById('ticket').style.display = 'none';
+}
+
+// ================== COBRAR Y TICKET ==================
+function cobrar() {
+    if (carrito.length === 0) {
+        alert("⚠️ El carrito está vacío");
+        return;
+    }
+    
+    const total = carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
+    const recibido = parseFloat(prompt(`Total a pagar: $${total.toFixed(2)}\nEfectivo recibido: $`));
+    
+    if (isNaN(recibido) || recibido < total) {
+        alert("⚠️ Cantidad inválida");
+        return;
+    }
+    
+    const cambio = recibido - total;
+    const fecha = new Date().toLocaleString('es-MX');
+    
+    // Mostrar ticket
+    document.getElementById('t-num').textContent = String(numeroTicket).padStart(4, '0');
+    document.getElementById('t-fecha').textContent = fecha;
+    document.getElementById('t-cajero').textContent = usuarioActivo;
+    document.getElementById('t-total').textContent = total.toFixed(2);
+    document.getElementById('t-pago').textContent = recibido.toFixed(2);
+    document.getElementById('t-cambio').textContent = cambio.toFixed(2);
+    
+    const itemsTicket = document.getElementById('t-items');
+    itemsTicket.innerHTML = '';
+    carrito.forEach(item => {
+        itemsTicket.innerHTML += `
+            <p class="fila-ticket">
+                <span>${item.cantidad}x ${item.nombre}</span>
+                <span>$${(item.precio * item.cantidad).toFixed(2)}</span>
+            </p>
+        `;
+    });
+    
+    document.getElementById('ticket').style.display = 'block';
+    numeroTicket++;
+    carrito = [];
+    actualizarCarrito();
+}
+
+// Verificar si hay usuarios al cargar
+window.onload = function() {
+    const usuarios = obtenerUsuarios();
+    if (Object.keys(usuarios).length === 0) {
+        document.getElementById('mensaje-auth').textContent = "ℹ️ No hay cuentas. Regístrate como primer usuario.";
+        document.getElementById('mensaje-auth').className = "mensaje exito";
+    }
+};
+</script>
+
+</body>
+</html>

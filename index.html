@@ -88,7 +88,6 @@
         .enlace { background: none; border: none; color: #8b5a2b; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 15px; }
         .enlace:hover { color: #5a3e1f; background: none; }
         
-        /* Impresión: SOLO muestra el ticket */
         @media print {
             body * { visibility: hidden; }
             .ticket, .ticket * { visibility: visible; }
@@ -99,7 +98,6 @@
 </head>
 <body>
 
-<!-- PANTALLA DE INICIO DE SESIÓN -->
 <div id="pantalla-login" class="login-pantalla">
     <div class="login-caja">
         <h2>🥖 Iniciar Sesión</h2>
@@ -142,7 +140,6 @@
     </div>
 </div>
 
-<!-- SISTEMA PRINCIPAL (OCULTO HASTA INICIAR SESIÓN) -->
 <div id="sistema" class="oculto">
     <header class="header-usuario">
         <div>
@@ -160,7 +157,6 @@
             <button id="btn-nuevo-producto" onclick="mostrarSeccion('nuevo-producto')">➕ Agregar Producto</button>
         </nav>
 
-        <!-- VENTAS -->
         <div id="sec-ventas" class="seccion">
             <h2>📋 Lista de Productos</h2>
             <div id="sin-productos" style="color:#888; padding:20px; text-align:center;">
@@ -197,7 +193,6 @@
             </div>
         </div>
 
-        <!-- MODAL PAGO -->
         <div id="modal-pago" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar-modal" onclick="cerrarModalPago()">&times;</span>
@@ -214,7 +209,6 @@
             </div>
         </div>
 
-        <!-- HISTORIAL -->
         <div id="sec-historial" class="seccion oculto">
             <h2>📊 Historial de Ventas</h2>
             <div class="fecha-filtro">
@@ -240,7 +234,6 @@
             </table>
         </div>
 
-        <!-- CIERRE DE CAJA -->
         <div id="sec-caja" class="seccion oculto">
             <h2>💰 Cierre de Caja</h2>
             <div class="resumen-caja">
@@ -267,7 +260,6 @@
             </div>
         </div>
 
-        <!-- AGREGAR PRODUCTO -->
         <div id="sec-nuevo-producto" class="seccion oculto">
             <h2>➕ Agregar Producto Nuevo</h2>
             <div id="msg-producto" class="mensaje"></div>
@@ -280,8 +272,8 @@
                 <input type="number" step="0.01" id="nuevo-precio" placeholder="0.00">
             </div>
             <div>
-                <label><strong>Categoría:</strong></
-                                    <select id="nuevo-categoria">
+                <label><strong>Categoría:</strong></label><br>
+                <select id="nuevo-categoria">
                     <option value="Panadería">🥖 Panadería</option>
                     <option value="Pastelería">🎂 Pastelería</option>
                     <option value="Bebidas">🥤 Bebidas</option>
@@ -289,16 +281,16 @@
                 </select>
             </div>
             <br>
-            <button onclick="agregarProducto()" class="verde">✅ Guardar Producto</button>
+            <button onclick
+                ="agregarProducto()" class="verde">✅ Guardar Producto</button>
             <button onclick="mostrarSeccion('ventas')">← Volver a Ventas</button>
         </div>
     </div>
 </div>
 
 <script>
-// Limpiar datos antiguos SOLO la primera vez
-localStorage.removeItem('productosAntiguos');
-const versionSistema = '2.0';
+// Control de versión y limpieza
+const versionSistema = '2.1';
 const versionGuardada = localStorage.getItem('versionSistema');
 if (versionGuardada !== versionSistema) {
     localStorage.clear();
@@ -312,7 +304,7 @@ let cierres = [];
 let usuarioActivo = null;
 let numeroTicket = 1;
 
-// ---------- FUNCIONES DE USUARIOS ----------
+// ---------- USUARIOS ----------
 function mostrarRegistro() {
     document.getElementById('form-login').classList.add('oculto');
     document.getElementById('form-registro').classList.remove('oculto');
@@ -592,7 +584,7 @@ function confirmarVenta() {
         cajero: usuarioActivo.nombre
     };
     ventas.push(venta);
-    localStorage.setItem('ventas', JSON.stringify(ventas));
+    localStorage.setItem('ventas', JSON.stringify(venta));
 
     document.getElementById('t-num').textContent = venta.id;
     document.getElementById('t-fecha').textContent = venta.fecha;
@@ -701,17 +693,18 @@ function exportarCaja() {
     const blob = new Blob([texto], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-        a.download = `cierre-caja-${hoy}.txt`;
+    a.download = `cierre-caja-${hoy}.txt`;
     a.click();
 }
 
-// ---------- VERIFICAR SESIÓN AL CARGAR ----------
+// ---------- INICIO AUTOMÁTICO ----------
 document.addEventListener('DOMContentLoaded', () => {
     const sesion = JSON.parse(localStorage.getItem('sesionActiva'));
     if (sesion) {
         usuarioActivo = sesion;
         document.getElementById('pantalla-login').classList.add('oculto');
-        document.getElementById('sistema').classList.remove('oculto');
+        document.getElementById('sistema').classList.remove('oc
+                                                            ulto');
         document.getElementById('nombre-usuario').textContent = sesion.nombre;
         cargarDatosGuardados();
         renderizarProductos();

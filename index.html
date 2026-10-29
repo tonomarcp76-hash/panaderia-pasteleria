@@ -10,11 +10,24 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
         header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
         nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        nav button { background: #6d4422; font-size: 14px; }
+        nav button { 
+            background: #6d4422; 
+            font-size: 14px; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
         nav button.activo { background: #8b5a2b; border: 2px solid #f0d4b5; }
-        .seccion { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .seccion { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
         h2 { color: #8b5a2b; margin-bottom: 15px; border-bottom: 2px solid #f0d4b5; padding-bottom: 8px; }
-        button { background: #8b5a2b; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin: 5px; font-size: 14px; }
         button:hover { background: #6d4422; }
         button.rojo { background: #c0392b; }
         button.rojo:hover { background: #a02a1c; }
@@ -25,7 +38,15 @@
         .producto { background: #fdf2e4; padding: 12px; border-radius: 8px; border-left: 4px solid #8b5a2b; }
         .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ddd; flex-wrap: wrap; gap: 8px; }
         .total { font-size: 22px; font-weight: bold; text-align: right; margin-top: 15px; color: #8b5a2b; }
-        .ticket { background: #fff; border: 1px dashed #888; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 13px; display: none; }
+        .ticket { 
+            background: #fff; 
+            border: 1px dashed #888; 
+            padding: 20px; 
+            margin-top: 20px; 
+            font-family: monospace; 
+            font-size: 13px; 
+            display: none; 
+        }
         .fila-ticket { display: flex; justify-content: space-between; padding: 2px 0; }
         .oculto { display: none !important; }
         .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
@@ -44,14 +65,22 @@
         .modal-contenido { background: white; padding: 25px; border-radius: 10px; max-width: 500px; width: 90%; position: relative; }
         .cerrar-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #888; }
         .cerrar-modal:hover { color: #000; }
-        .btn-quitar { background: #e74c3c; padding: 2px 8px; font-size: 12px; }
+        .btn-agregar { background: #f0d4b5; color: #5a3e2b; padding: 5px 10px; font-size: 13px; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-quitar { background: #e74c3c; padding: 2px 8px; font-size: 12px; border: none; border-radius: 3px; cursor: pointer; color: white; }
         .cantidad-controles { display: flex; align-items: center; gap: 8px; }
         .cantidad-controles button { padding: 2px 8px; margin: 0; }
+        
+        /* Estilo para impresión */
+        @media print {
+            body * { visibility: hidden; }
+            .ticket, .ticket * { visibility: visible; }
+            .ticket { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+            .ticket button { display: none; }
+        }
     </style>
 </head>
 <body>
 
-<!-- 🛒 SISTEMA PRINCIPAL - SIN INICIO DE SESIÓN -->
 <div id="sistema">
     <header>
         <h1>🥖 PANADERÍA Y PASTELERÍA</h1>
@@ -60,13 +89,13 @@
 
     <div class="container">
         <nav>
-            <button class="activo" onclick="mostrarSeccion('ventas')">🛒 Ventas</button>
-            <button onclick="mostrarSeccion('historial')">📊 Historial de Ventas</button>
-            <button onclick="mostrarSeccion('caja')">💰 Cierre de Caja</button>
-            <button onclick="mostrarSeccion('nuevo-producto')">➕ Agregar Producto</button>
+            <button id="btn-ventas" class="activo" onclick="mostrarSeccion('ventas')">🛒 Ventas</button>
+            <button id="btn-historial" onclick="mostrarSeccion('historial')">📊 Historial de Ventas</button>
+            <button id="btn-caja" onclick="mostrarSeccion('caja')">💰 Cierre de Caja</button>
+            <button id="btn-nuevo-producto" onclick="mostrarSeccion('nuevo-producto')">➕ Agregar Producto</button>
         </nav>
 
-        <!-- 🛒 VENTAS -->
+        <!-- VENTAS -->
         <div id="sec-ventas" class="seccion">
             <h2>📋 Lista de Productos</h2>
             <div class="grid" id="lista-productos"></div>
@@ -99,7 +128,7 @@
             </div>
         </div>
 
-        <!-- 💳 MODAL PAGO -->
+        <!-- MODAL PAGO -->
         <div id="modal-pago" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar-modal" onclick="cerrarModalPago()">&times;</span>
@@ -116,7 +145,7 @@
             </div>
         </div>
 
-        <!-- 📊 HISTORIAL -->
+        <!-- HISTORIAL -->
         <div id="sec-historial" class="seccion oculto">
             <h2>📊 Historial de Ventas</h2>
             <div class="fecha-filtro">
@@ -142,7 +171,7 @@
             </table>
         </div>
 
-        <!-- 💰 CIERRE DE CAJA -->
+        <!-- CIERRE DE CAJA -->
         <div id="sec-caja" class="seccion oculto">
             <h2>💰 Cierre de Caja</h2>
             <div class="resumen-caja">
@@ -169,7 +198,7 @@
             </div>
         </div>
 
-        <!-- ➕ AGREGAR PRODUCTO -->
+        <!-- AGREGAR PRODUCTO -->
         <div id="sec-nuevo-producto" class="seccion oculto">
             <h2>➕ Agregar Producto Nuevo</h2>
             <div id="msg-producto" class="mensaje"></div>
@@ -191,14 +220,13 @@
                 </select>
             </div>
             <br>
-            <button onclick="agregarProducto()">✅ Guardar Producto</button>
+            <button onclick="agregarProducto()" class="verde">✅ Guardar Producto</button>
             <button onclick="mostrarSeccion('ventas')">← Volver a Ventas</button>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== DATOS INICIALES ====================
 let productos = [
     { codigo: "PAN001", nombre: "Concha", precio: 12.00, categoria: "Panadería" },
     { codigo: "PAN002", nombre: "Cuernito", precio: 10.00, categoria: "Panadería" },
@@ -222,23 +250,26 @@ let ventas = JSON.parse(localStorage.getItem('ventas')) || [];
 let cierres = JSON.parse(localStorage.getItem('cierres')) || [];
 let numeroTicket = ventas.length + 1;
 
-// ==================== INICIO DIRECTO ====================
+// NAVEGACIÓN
+function mostrarSeccion(nombre) {
+    document.querySelectorAll('.seccion').forEach(sec => sec.classList.add('oculto'));
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('activo'));
+    document.getElementById(`sec-${nombre}`).classList.remove('oculto');
+    document.getElementById(`btn-${nombre}`).classList.add('activo');
+    if (nombre === 'historial') cargarHistorial();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     renderizarProductos();
     actualizarCaja();
     document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
+    if (cierres.length > 0) {
+        const ultimo = cierres[cierres.length - 1];
+        document.getElementById('ultimo-cierre').innerHTML = 
+            `Fecha: ${ultimo.fecha} — Ventas: ${ultimo.cantidad} — Total: $${ultimo.total.toFixed(2)}`;
+    }
 });
 
-// ==================== NAVEGACIÓN ====================
-function mostrarSeccion(nombre) {
-    document.querySelectorAll('.seccion').forEach(s => s.classList.add('oculto'));
-    document.getElementById(`sec-${nombre}`).classList.remove('oculto');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('activo'));
-    event.target.classList.add('activo');
-    if (nombre === 'historial') cargarHistorial();
-}
-
-// ==================== PRODUCTOS ====================
 function renderizarProductos() {
     const contenedor = document.getElementById('lista-productos');
     contenedor.innerHTML = '';
@@ -254,13 +285,50 @@ function renderizarProductos() {
     });
 }
 
-// ==================== CARRITO ====================
 function agregarAlCarrito(codigo) {
     const prod = productos.find(p => p.codigo === codigo);
     const item = carrito.find(i => i.codigo === codigo);
     if (item) item.cantidad++;
     else carrito.push({ ...prod, cantidad: 1 });
-    actualizarCarrito();
+    actualizarCar
+    }
+
+function actualizarCarrito() {
+    const contenedor = document.getElementById('items-carrito');
+    const vacio = document.getElementById('carrito-vacio');
+    const totalEl = document.getElementById('total');
+
+    if (carrito.length === 0) {
+        contenedor.innerHTML = '';
+        vacio.style.display = 'block';
+        totalEl.textContent = '0.00';
+        return;
+    }
+
+    vacio.style.display = 'none';
+    contenedor.innerHTML = '';
+    let total = 0;
+
+    carrito.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        contenedor.innerHTML += `
+            <div class="carrito-item">
+                <div>
+                    <strong>${item.nombre}</strong><br>
+                    $${item.precio.toFixed(2)} c/u
+                </div>
+                <div class="cantidad-controles">
+                    <button class="btn-quitar" onclick="quitarDelCarrito('${item.codigo}')">−</button>
+                    <span>${item.cantidad}</span>
+                    <button class="btn-agregar" onclick="agregarAlCarrito('${item.codigo}')">+</button>
+                </div>
+                <div style="font-weight:bold;">$${subtotal.toFixed(2)}</div>
+            </div>
+        `;
+    });
+
+    totalEl.textContent = total.toFixed(2);
 }
 
 function quitarDelCarrito(codigo) {
@@ -278,42 +346,10 @@ function limpiarCarrito() {
     document.getElementById('ticket').style.display = 'none';
 }
 
-function actualizarCarrito() {
-    const contenedor = document.getElementById('items-carrito');
-    const vacio = document.getElementById('carrito-vacio');
-    const totalEl = document.getElementById('total');
-    
-    if (carrito.length === 0) {
-        contenedor.innerHTML = '';
-        vacio.style.display = 'block';
-        totalEl.textContent = '0
-                } else {
-        vacio.style.display = 'none';
-        contenedor.innerHTML = '';
-        let total = 0;
-        carrito.forEach(item => {
-            const subtotal = item.precio * item.cantidad;
-            total += subtotal;
-            contenedor.innerHTML += `
-                <div class="carrito-item">
-                    <div>
-                        <strong>${item.nombre}</strong><br>
-                        $${item.precio.toFixed(2)} c/u
-                    </div>
-                    <div class="cantidad-controles">
-                        <button class="btn-quitar" onclick="quitarDelCarrito('${item.codigo}')">−</button>
-                        <span>${item.cantidad}</span>
-                        <button class="btn-agregar" onclick="agregarAlCarrito('${item.codigo}')">+</button>
-                    </div>
-                    <div style="font-weight:bold;">$${subtotal.toFixed(2)}</div>
-                </div>
-            `;
-        });
-        totalEl.textContent = total.toFixed(2);
-    }
+function calcularTotal() {
+    return carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
 }
 
-// ==================== MODAL DE PAGO ====================
 function abrirModalPago() {
     if (carrito.length === 0) return alert('Agrega productos primero');
     document.getElementById('modal-total').textContent = calcularTotal().toFixed(2);
@@ -324,10 +360,6 @@ function abrirModalPago() {
 
 function cerrarModalPago() {
     document.getElementById('modal-pago').classList.remove('activo');
-}
-
-function calcularTotal() {
-    return carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
 }
 
 function calcularCambio() {
@@ -357,11 +389,10 @@ function confirmarVenta() {
     // Generar ticket
     document.getElementById('t-num').textContent = venta.id;
     document.getElementById('t-fecha').textContent = venta.fecha;
-    document.getElementById('t-cajero').textContent = venta.cajero;
     document.getElementById('t-total').textContent = total.toFixed(2);
     document.getElementById('t-pago').textContent = recibido.toFixed(2);
     document.getElementById('t-cambio').textContent = cambio.toFixed(2);
-    
+
     const tItems = document.getElementById('t-items');
     tItems.innerHTML = '';
     venta.items.forEach(i => {
@@ -369,18 +400,22 @@ function confirmarVenta() {
     });
     document.getElementById('ticket').style.display = 'block';
 
+    // Imprimir automáticamente
+    setTimeout(() => {
+        window.print();
+    }, 300);
+
     cerrarModalPago();
     carrito = [];
     actualizarCarrito();
     actualizarCaja();
 }
 
-// ==================== HISTORIAL ====================
 function cargarHistorial(lista = ventas) {
     const vacio = document.getElementById('historial-vacio');
     const tabla = document.getElementById('tabla-historial');
     const cuerpo = document.getElementById('cuerpo-historial');
-    
+
     if (lista.length === 0) {
         vacio.style.display = 'block';
         tabla.style.display = 'none';
@@ -406,11 +441,11 @@ function filtrarHistorial() {
     const desde = document.getElementById('fecha-desde').value;
     const hasta = document.getElementById('fecha-hasta').value;
     if (!desde || !hasta) return alert('Selecciona ambas fechas');
-    
+
     const dDesde = new Date(desde);
     const dHasta = new Date(hasta);
     dHasta.setHours(23,59,59);
-    
+
     const filtradas = ventas.filter(v => {
         const fVenta = new Date(v.fecha);
         return fVenta >= dDesde && fVenta <= dHasta;
@@ -422,7 +457,6 @@ function verTodoHistorial() {
     cargarHistorial();
 }
 
-// ==================== CIERRE DE CAJA ====================
 function actualizarCaja() {
     const hoy = new Date().toLocaleDateString('es-MX');
     const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
@@ -436,13 +470,13 @@ function cerrarCaja() {
     const hoy = new Date().toLocaleDateString('es-MX');
     const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
     const total = ventasHoy.reduce((s, v) => s + v.total, 0);
-    
+
     const cierre = { fecha: hoy, cantidad: ventasHoy.length, total };
     cierres.push(cierre);
     localStorage.setItem('cierres', JSON.stringify(cierres));
-    
+
     alert(`Cierre registrado:\nVentas: ${ventasHoy.length}\nTotal: $${total.toFixed(2)}`);
-    document.getElementById('ultimo-cierre').innerHTML = 
+    document.getElementById('ultimo-cierre').innerHTML =
         `Fecha: ${cierre.fecha} — Ventas: ${cierre.cantidad} — Total: $${cierre.total.toFixed(2)}`;
 }
 
@@ -456,7 +490,7 @@ function exportarCaja() {
     });
     texto += '='.repeat(40) + '\n';
     texto += `TOTAL: $${ventasHoy.reduce((s,v)=>s+v.total,0).toFixed(2)}\n`;
-    
+
     const blob = new Blob([texto], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -464,36 +498,35 @@ function exportarCaja() {
     a.click();
 }
 
-// ==================== AGREGAR PRODUCTO ====================
 function agregarProducto() {
     const nombre = document.getElementById('nuevo-nombre').value.trim();
     const precio = parseFloat(document.getElementById('nuevo-precio').value);
     const cat = document.getElementById('nuevo-categoria').value;
     const msg = document.getElementById('msg-producto');
-    
+
     if (!nombre || isNaN(precio) || precio <= 0) {
         msg.className = 'mensaje error';
         msg.textContent = 'Completa todos los datos correctamente';
         return;
     }
-    
+
     const sufijo = cat === 'Panadería' ? 'PAN' : cat === 'Pastelería' ? 'PAS' : cat === 'Bebidas' ? 'BEB' : 'OTR';
     const maxCod = productos.filter(p => p.codigo.startsWith(sufijo)).reduce((m,p) => {
         const n = parseInt(p.codigo.replace(/\D/g,''));
         return n>m?n:m;
     }, 0);
-    
+
     productos.push({
         codigo: `${sufijo}${String(maxCod+1).padStart(3,'0')}`,
         nombre, precio, categoria: cat
     });
-    
+
     msg.className = 'mensaje exito';
     msg.textContent = '✅ Producto agregado';
     document.getElementById('nuevo-nombre').value = '';
     document.getElementById('nuevo-precio').value = '';
     renderizarProductos();
-    
+
     setTimeout(() => msg.className = 'mensaje', 3000);
 }
 </script>

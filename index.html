@@ -6,7 +6,7 @@
     <title>🍞 Panadería y Pastelería - POS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
         header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
         nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -23,13 +23,10 @@
         input, select { padding: 8px; border: 1px solid #d4b89b; border-radius: 5px; margin: 5px; width: 100%; max-width: 300px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
         .producto { background: #fdf2e4; padding: 12px; border-radius: 8px; border-left: 4px solid #8b5a2b; }
-        .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ddd; }
+        .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ddd; flex-wrap: wrap; gap: 8px; }
         .total { font-size: 22px; font-weight: bold; text-align: right; margin-top: 15px; color: #8b5a2b; }
         .ticket { background: #fff; border: 1px dashed #888; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 13px; display: none; }
         .fila-ticket { display: flex; justify-content: space-between; padding: 2px 0; }
-        .auth-box { max-width: 400px; margin: 0 auto; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 30px; border-radius: 12px; background: #fff; }
-        .auth-box h2 { border: none; margin-bottom: 20px; }
-        .auth-box img { max-width: 60px; margin-bottom: 10px; }
         .oculto { display: none !important; }
         .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
         .exito { background: #d4edda; color: #155724; display: block; }
@@ -47,62 +44,18 @@
         .modal-contenido { background: white; padding: 25px; border-radius: 10px; max-width: 500px; width: 90%; position: relative; }
         .cerrar-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #888; }
         .cerrar-modal:hover { color: #000; }
-        .btn-entrar { background: #d4a017; color: #fff; font-weight: bold; }
-        .btn-registrar { background: #e8d5b7; color: #5a3e2b; font-weight: bold; border: 1px solid #8b5a2b; }
-        .btn-agregar { background: #f0d4b5; color: #5a3e2b; padding: 5px 10px; font-size: 13px; }
         .btn-quitar { background: #e74c3c; padding: 2px 8px; font-size: 12px; }
         .cantidad-controles { display: flex; align-items: center; gap: 8px; }
         .cantidad-controles button { padding: 2px 8px; margin: 0; }
-        #sistema { width: 100%; }
     </style>
 </head>
 <body>
 
-<!-- 🔐 INICIO DE SESIÓN -->
-<div id="seccion-auth" class="auth-box">
-    <div style="font-size:40px;">🥐</div>
-    <h2>Iniciar Sesión</h2>
-    <div id="mensaje-auth" class="mensaje"></div>
-    <div style="text-align: left;">
-        <label><strong>Usuario:</strong></label><br>
-        <input type="text" id="usuario" placeholder="Escribe tu usuario">
-    </div>
-    <div style="text-align: left; margin-top:10px;">
-        <label><strong>Contraseña:</strong></label><br>
-        <input type="password" id="contrasena" placeholder="Escribe tu contraseña">
-    </div>
-    <br>
-    <button class="btn-entrar" onclick="iniciarSesion()">🔑 Entrar</button>
-    <button class="btn-registrar" onclick="mostrarRegistro()">📝 Registrarse</button>
-</div>
-
-<!-- 📝 REGISTRO -->
-<div id="seccion-registro" class="auth-box oculto">
-    <div style="font-size:40px;">📝</div>
-    <h2>Registrar Usuario</h2>
-    <div id="mensaje-reg" class="mensaje"></div>
-    <div style="text-align: left;">
-        <label><strong>Usuario:</strong></label><br>
-        <input type="text" id="nuevo-usuario" placeholder="Mínimo 3 caracteres">
-    </div>
-    <div style="text-align: left; margin-top:10px;">
-        <label><strong>Contraseña:</strong></label><br>
-        <input type="password" id="nueva-pass" placeholder="Mínimo 4 caracteres">
-    </div>
-    <div style="text-align: left; margin-top:10px;">
-        <label><strong>Confirmar contraseña:</strong></label><br>
-        <input type="password" id="confirma-pass" placeholder="Repite tu contraseña">
-    </div>
-    <br>
-    <button class="btn-entrar" onclick="registrarUsuario()">✅ Crear cuenta</button>
-    <button class="btn-registrar" onclick="cerrarRegistro()">← Volver</button>
-</div>
-
-<!-- 🛒 SISTEMA PRINCIPAL -->
-<div id="sistema" class="oculto">
+<!-- 🛒 SISTEMA PRINCIPAL - SIN INICIO DE SESIÓN -->
+<div id="sistema">
     <header>
         <h1>🥖 PANADERÍA Y PASTELERÍA</h1>
-        <p>Bienvenido, <span id="nombre-usuario"></span> | <button style="background:#5a3e2b; padding:5px 10px; font-size:12px;" onclick="cerrarSesion()">Cerrar sesión</button></p>
+        <p>Bienvenido al sistema de ventas</p>
     </header>
 
     <div class="container">
@@ -132,7 +85,7 @@
                 <hr>
                 <p>Ticket Nº: <span id="t-num"></span></p>
                 <p>Fecha: <span id="t-fecha"></span></p>
-                <p>Cajero: <span id="t-cajero"></span></p>
+                <p>Cajero: Sistema</p>
                 <hr>
                 <div id="t-items"></div>
                 <hr>
@@ -263,3 +216,286 @@ let productos = [
     { codigo: "PAS006", nombre: "Gelatina Individual", precio: 25.00, categoria: "Pastelería" },
     { codigo: "PAS007", nombre: "Mousse de Limón", precio: 35.00, categoria: "Pastelería" }
 ];
+
+let carrito = [];
+let ventas = JSON.parse(localStorage.getItem('ventas')) || [];
+let cierres = JSON.parse(localStorage.getItem('cierres')) || [];
+let numeroTicket = ventas.length + 1;
+
+// ==================== INICIO DIRECTO ====================
+document.addEventListener('DOMContentLoaded', () => {
+    renderizarProductos();
+    actualizarCaja();
+    document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
+});
+
+// ==================== NAVEGACIÓN ====================
+function mostrarSeccion(nombre) {
+    document.querySelectorAll('.seccion').forEach(s => s.classList.add('oculto'));
+    document.getElementById(`sec-${nombre}`).classList.remove('oculto');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('activo'));
+    event.target.classList.add('activo');
+    if (nombre === 'historial') cargarHistorial();
+}
+
+// ==================== PRODUCTOS ====================
+function renderizarProductos() {
+    const contenedor = document.getElementById('lista-productos');
+    contenedor.innerHTML = '';
+    productos.forEach(p => {
+        contenedor.innerHTML += `
+            <div class="producto">
+                <h4>${p.nombre}</h4>
+                <p style="color:#666; font-size:13px;">${p.categoria}</p>
+                <p style="font-size:18px; font-weight:bold; margin:8px 0;">$${p.precio.toFixed(2)}</p>
+                <button class="btn-agregar" onclick="agregarAlCarrito('${p.codigo}')">➕ Agregar</button>
+            </div>
+        `;
+    });
+}
+
+// ==================== CARRITO ====================
+function agregarAlCarrito(codigo) {
+    const prod = productos.find(p => p.codigo === codigo);
+    const item = carrito.find(i => i.codigo === codigo);
+    if (item) item.cantidad++;
+    else carrito.push({ ...prod, cantidad: 1 });
+    actualizarCarrito();
+}
+
+function quitarDelCarrito(codigo) {
+    const idx = carrito.findIndex(i => i.codigo === codigo);
+    if (idx !== -1) {
+        carrito[idx].cantidad--;
+        if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
+    }
+    actualizarCarrito();
+}
+
+function limpiarCarrito() {
+    carrito = [];
+    actualizarCarrito();
+    document.getElementById('ticket').style.display = 'none';
+}
+
+function actualizarCarrito() {
+    const contenedor = document.getElementById('items-carrito');
+    const vacio = document.getElementById('carrito-vacio');
+    const totalEl = document.getElementById('total');
+    
+    if (carrito.length === 0) {
+        contenedor.innerHTML = '';
+        vacio.style.display = 'block';
+        totalEl.textContent = '0
+                } else {
+        vacio.style.display = 'none';
+        contenedor.innerHTML = '';
+        let total = 0;
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            total += subtotal;
+            contenedor.innerHTML += `
+                <div class="carrito-item">
+                    <div>
+                        <strong>${item.nombre}</strong><br>
+                        $${item.precio.toFixed(2)} c/u
+                    </div>
+                    <div class="cantidad-controles">
+                        <button class="btn-quitar" onclick="quitarDelCarrito('${item.codigo}')">−</button>
+                        <span>${item.cantidad}</span>
+                        <button class="btn-agregar" onclick="agregarAlCarrito('${item.codigo}')">+</button>
+                    </div>
+                    <div style="font-weight:bold;">$${subtotal.toFixed(2)}</div>
+                </div>
+            `;
+        });
+        totalEl.textContent = total.toFixed(2);
+    }
+}
+
+// ==================== MODAL DE PAGO ====================
+function abrirModalPago() {
+    if (carrito.length === 0) return alert('Agrega productos primero');
+    document.getElementById('modal-total').textContent = calcularTotal().toFixed(2);
+    document.getElementById('pago-recibido').value = '';
+    document.getElementById('pago-cambio').textContent = '0.00';
+    document.getElementById('modal-pago').classList.add('activo');
+}
+
+function cerrarModalPago() {
+    document.getElementById('modal-pago').classList.remove('activo');
+}
+
+function calcularTotal() {
+    return carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+}
+
+function calcularCambio() {
+    const total = calcularTotal();
+    const recibido = parseFloat(document.getElementById('pago-recibido').value) || 0;
+    const cambio = recibido - total;
+    document.getElementById('pago-cambio').textContent = cambio >= 0 ? cambio.toFixed(2) : '0.00';
+}
+
+function confirmarVenta() {
+    const total = calcularTotal();
+    const recibido = parseFloat(document.getElementById('pago-recibido').value) || 0;
+    if (recibido < total) return alert('El pago no cubre el total');
+
+    const cambio = recibido - total;
+    const fecha = new Date();
+    const venta = {
+        id: numeroTicket++,
+        fecha: fecha.toLocaleString('es-MX'),
+        total,
+        items: [...carrito],
+        cajero: 'Sistema'
+    };
+    ventas.push(venta);
+    localStorage.setItem('ventas', JSON.stringify(ventas));
+
+    // Generar ticket
+    document.getElementById('t-num').textContent = venta.id;
+    document.getElementById('t-fecha').textContent = venta.fecha;
+    document.getElementById('t-cajero').textContent = venta.cajero;
+    document.getElementById('t-total').textContent = total.toFixed(2);
+    document.getElementById('t-pago').textContent = recibido.toFixed(2);
+    document.getElementById('t-cambio').textContent = cambio.toFixed(2);
+    
+    const tItems = document.getElementById('t-items');
+    tItems.innerHTML = '';
+    venta.items.forEach(i => {
+        tItems.innerHTML += `<p class="fila-ticket">${i.nombre} x${i.cantidad} <span>$${(i.precio*i.cantidad).toFixed(2)}</span></p>`;
+    });
+    document.getElementById('ticket').style.display = 'block';
+
+    cerrarModalPago();
+    carrito = [];
+    actualizarCarrito();
+    actualizarCaja();
+}
+
+// ==================== HISTORIAL ====================
+function cargarHistorial(lista = ventas) {
+    const vacio = document.getElementById('historial-vacio');
+    const tabla = document.getElementById('tabla-historial');
+    const cuerpo = document.getElementById('cuerpo-historial');
+    
+    if (lista.length === 0) {
+        vacio.style.display = 'block';
+        tabla.style.display = 'none';
+        return;
+    }
+    vacio.style.display = 'none';
+    tabla.style.display = 'table';
+    cuerpo.innerHTML = '';
+    lista.forEach(v => {
+        cuerpo.innerHTML += `
+            <tr>
+                <td>${v.id}</td>
+                <td>${v.fecha}</td>
+                <td>${v.cajero}</td>
+                <td>$${v.total.toFixed(2)}</td>
+                <td>${v.items.map(i => `${i.nombre} x${i.cantidad}`).join(', ')}</td>
+            </tr>
+        `;
+    });
+}
+
+function filtrarHistorial() {
+    const desde = document.getElementById('fecha-desde').value;
+    const hasta = document.getElementById('fecha-hasta').value;
+    if (!desde || !hasta) return alert('Selecciona ambas fechas');
+    
+    const dDesde = new Date(desde);
+    const dHasta = new Date(hasta);
+    dHasta.setHours(23,59,59);
+    
+    const filtradas = ventas.filter(v => {
+        const fVenta = new Date(v.fecha);
+        return fVenta >= dDesde && fVenta <= dHasta;
+    });
+    cargarHistorial(filtradas);
+}
+
+function verTodoHistorial() {
+    cargarHistorial();
+}
+
+// ==================== CIERRE DE CAJA ====================
+function actualizarCaja() {
+    const hoy = new Date().toLocaleDateString('es-MX');
+    const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
+    document.getElementById('caja-ventas').textContent = ventasHoy.length;
+    const total = ventasHoy.reduce((s, v) => s + v.total, 0);
+    document.getElementById('caja-total').textContent = `$${total.toFixed(2)}`;
+}
+
+function cerrarCaja() {
+    if (!confirm('¿Seguro de cerrar caja? No se puede deshacer')) return;
+    const hoy = new Date().toLocaleDateString('es-MX');
+    const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
+    const total = ventasHoy.reduce((s, v) => s + v.total, 0);
+    
+    const cierre = { fecha: hoy, cantidad: ventasHoy.length, total };
+    cierres.push(cierre);
+    localStorage.setItem('cierres', JSON.stringify(cierres));
+    
+    alert(`Cierre registrado:\nVentas: ${ventasHoy.length}\nTotal: $${total.toFixed(2)}`);
+    document.getElementById('ultimo-cierre').innerHTML = 
+        `Fecha: ${cierre.fecha} — Ventas: ${cierre.cantidad} — Total: $${cierre.total.toFixed(2)}`;
+}
+
+function exportarCaja() {
+    const hoy = new Date().toLocaleDateString('es-MX');
+    const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
+    let texto = `CIERRE DE CAJA — ${hoy}\n`;
+    texto += '='.repeat(40) + '\n';
+    ventasHoy.forEach(v => {
+        texto += `Ticket ${v.id} — ${v.fecha} — $${v.total.toFixed(2)}\n`;
+    });
+    texto += '='.repeat(40) + '\n';
+    texto += `TOTAL: $${ventasHoy.reduce((s,v)=>s+v.total,0).toFixed(2)}\n`;
+    
+    const blob = new Blob([texto], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `cierre-caja-${hoy}.txt`;
+    a.click();
+}
+
+// ==================== AGREGAR PRODUCTO ====================
+function agregarProducto() {
+    const nombre = document.getElementById('nuevo-nombre').value.trim();
+    const precio = parseFloat(document.getElementById('nuevo-precio').value);
+    const cat = document.getElementById('nuevo-categoria').value;
+    const msg = document.getElementById('msg-producto');
+    
+    if (!nombre || isNaN(precio) || precio <= 0) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Completa todos los datos correctamente';
+        return;
+    }
+    
+    const sufijo = cat === 'Panadería' ? 'PAN' : cat === 'Pastelería' ? 'PAS' : cat === 'Bebidas' ? 'BEB' : 'OTR';
+    const maxCod = productos.filter(p => p.codigo.startsWith(sufijo)).reduce((m,p) => {
+        const n = parseInt(p.codigo.replace(/\D/g,''));
+        return n>m?n:m;
+    }, 0);
+    
+    productos.push({
+        codigo: `${sufijo}${String(maxCod+1).padStart(3,'0')}`,
+        nombre, precio, categoria: cat
+    });
+    
+    msg.className = 'mensaje exito';
+    msg.textContent = '✅ Producto agregado';
+    document.getElementById('nuevo-nombre').value = '';
+    document.getElementById('nuevo-precio').value = '';
+    renderizarProductos();
+    
+    setTimeout(() => msg.className = 'mensaje', 3000);
+}
+</script>
+</body>
+</html>

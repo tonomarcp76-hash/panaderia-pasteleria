@@ -28,7 +28,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
         }
         h2 { color: #8b5a2b; margin-bottom: 15px; border-bottom: 2px solid #f0d4b5; padding-bottom: 8px; }
-        button:hover { background: #6d4422; }
+        button:hover { background: #5a3e1f; }
         button.rojo { background: #c0392b; }
         button.rojo:hover { background: #a02a1c; }
         button.verde { background: #27ae60; }
@@ -70,12 +70,12 @@
         .cantidad-controles { display: flex; align-items: center; gap: 8px; }
         .cantidad-controles button { padding: 2px 8px; margin: 0; }
         
-        /* Estilo para impresión */
+        /* Impresión: SOLO muestra el ticket */
         @media print {
             body * { visibility: hidden; }
             .ticket, .ticket * { visibility: visible; }
-            .ticket { position: absolute; left: 0; top: 0; width: 100%; border: none; }
-            .ticket button { display: none; }
+            .ticket { position: absolute; left: 0; top: 0; width: 80%; max-width: 300px; margin: 0 auto; border: none; }
+            .ticket button { display: none !important; }
         }
     </style>
 </head>
@@ -111,17 +111,16 @@
             <div class="ticket" id="ticket">
                 <h3 style="text-align:center;">PANADERÍA Y PASTELERÍA</h3>
                 <p style="text-align:center;">Calle Ejemplo 123, CDMX<br>Tel: 55-1234-5678</p>
-                <hr>
+                <hr style="border:1px dashed #999; margin:10px 0;">
                 <p>Ticket Nº: <span id="t-num"></span></p>
                 <p>Fecha: <span id="t-fecha"></span></p>
-                <p>Cajero: Sistema</p>
-                <hr>
+                <hr style="border:1px dashed #999; margin:10px 0;">
                 <div id="t-items"></div>
-                <hr>
+                <hr style="border:1px dashed #999; margin:10px 0;">
                 <p class="fila-ticket"><strong>TOTAL: $<span id="t-total"></span></strong></p>
                 <p class="fila-ticket">Pago con: $<span id="t-pago"></span></p>
                 <p class="fila-ticket">Cambio: $<span id="t-cambio"></span></p>
-                <hr>
+                <hr style="border:1px dashed #999; margin:10px 0;">
                 <p style="text-align:center;">¡Gracias por su compra!<br>Vuelva pronto</p>
                 <br>
                 <button onclick="window.print()">🖨️ Imprimir Ticket</button>
@@ -250,12 +249,22 @@ let ventas = JSON.parse(localStorage.getItem('ventas')) || [];
 let cierres = JSON.parse(localStorage.getItem('cierres')) || [];
 let numeroTicket = ventas.length + 1;
 
-// NAVEGACIÓN
+// ✅ NAVEGACIÓN CORREGIDA
 function mostrarSeccion(nombre) {
-    document.querySelectorAll('.seccion').forEach(sec => sec.classList.add('oculto'));
-    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('activo'));
+    // Ocultar TODAS las secciones
+    document.querySelectorAll('.seccion').forEach(sec => {
+        sec.classList.add('oculto');
+    });
+    // Quitar activo de TODOS los botones
+    document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('activo');
+    });
+    // Mostrar la seleccionada
     document.getElementById(`sec-${nombre}`).classList.remove('oculto');
-    document.getElementById(`btn-${nombre}`).classList.add('activo');
+    // Marcar botón activo
+    const btnActivo = document.getElementById(`btn-${nombre}`);
+    if (btnActivo) btnActivo.classList.add('activo');
+    // Cargar historial si corresponde
     if (nombre === 'historial') cargarHistorial();
 }
 
@@ -277,7 +286,8 @@ function renderizarProductos() {
         contenedor.innerHTML += `
             <div class="producto">
                 <h4>${p.nombre}</h4>
-                <p style="color:#666; font-size:13px;">${p.categoria}</p>
+                <p style
+                ="color:#666; font-size:13px;">${p.categoria}</p>
                 <p style="font-size:18px; font-weight:bold; margin:8px 0;">$${p.precio.toFixed(2)}</p>
                 <button class="btn-agregar" onclick="agregarAlCarrito('${p.codigo}')">➕ Agregar</button>
             </div>
@@ -290,8 +300,27 @@ function agregarAlCarrito(codigo) {
     const item = carrito.find(i => i.codigo === codigo);
     if (item) item.cantidad++;
     else carrito.push({ ...prod, cantidad: 1 });
-    actualizarCar
+    actualizarCarrito();
+}
+
+function quitarDelCarrito(codigo) {
+    const idx = carrito.findIndex(i => i.codigo === codigo);
+    if (idx !== -1) {
+        carrito[idx].cantidad--;
+        if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
     }
+    actualizarCarrito();
+}
+
+function limpiarCarrito() {
+    carrito = [];
+    actualizarCarrito();
+    document.getElementById('ticket').style.display = 'none';
+}
+
+function calcularTotal() {
+    return carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+}
 
 function actualizarCarrito() {
     const contenedor = document.getElementById('items-carrito');
@@ -329,25 +358,6 @@ function actualizarCarrito() {
     });
 
     totalEl.textContent = total.toFixed(2);
-}
-
-function quitarDelCarrito(codigo) {
-    const idx = carrito.findIndex(i => i.codigo === codigo);
-    if (idx !== -1) {
-        carrito[idx].cantidad--;
-        if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
-    }
-    actualizarCarrito();
-}
-
-function limpiarCarrito() {
-    carrito = [];
-    actualizarCarrito();
-    document.getElementById('ticket').style.display = 'none';
-}
-
-function calcularTotal() {
-    return carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
 }
 
 function abrirModalPago() {
@@ -400,10 +410,10 @@ function confirmarVenta() {
     });
     document.getElementById('ticket').style.display = 'block';
 
-    // Imprimir automáticamente
+    // IMPRESIÓN AUTOMÁTICA AL VENDER
     setTimeout(() => {
         window.print();
-    }, 300);
+    }, 400);
 
     cerrarModalPago();
     carrito = [];

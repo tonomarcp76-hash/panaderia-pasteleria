@@ -281,8 +281,8 @@
                 </select>
             </div>
             <br>
-            <button onclick
-                ="agregarProducto()" class="verde">✅ Guardar Producto</button>
+            <button onclick="agregarProducto()" class="verde">✅ Guardar Product
+                o"></button>
             <button onclick="mostrarSeccion('ventas')">← Volver a Ventas</button>
         </div>
     </div>
@@ -460,23 +460,31 @@ function agregarProducto() {
         return;
     }
 
-    const sufijo = cat === 'Panadería' ? 'PAN' : cat === 'Pastelería' ? 'PAS' : cat === 'Bebidas' ? 'BEB' : 'OTR';
-    const maxCod = productos.filter(p => p.codigo.startsWith(sufijo)).reduce((m,p) => {
-        const n = parseInt(p.codigo.replace(/\D/g,''));
-        return n>m?n:m;
-    }, 0);
+    const sufijo = cat === 'Panadería' ? 'PAN' : 
+                   cat === 'Pastelería' ? 'PAS' : 
+                   cat === 'Bebidas' ? 'BEB' : 'OTR';
+    
+    const maxCod = productos.filter(p => p.codigo.startsWith(sufijo))
+                      .reduce((m, p) => {
+                          const n = parseInt(p.codigo.replace(/\D/g, ''));
+                          return n > m ? n : m;
+                      }, 0);
 
     productos.push({
-        codigo: `${sufijo}${String(maxCod+1).padStart(3,'0')}`,
-        nombre, precio, categoria: cat
+        codigo: `${sufijo}${String(maxCod + 1).padStart(3, '0')}`,
+        nombre, 
+        precio, 
+        categoria: cat
     });
 
     localStorage.setItem('productos', JSON.stringify(productos));
 
     msg.className = 'mensaje exito';
     msg.textContent = '✅ Producto agregado';
+    
     document.getElementById('nuevo-nombre').value = '';
     document.getElementById('nuevo-precio').value = '';
+    
     renderizarProductos();
 
     setTimeout(() => msg.className = 'mensaje', 3000);
@@ -584,7 +592,7 @@ function confirmarVenta() {
         cajero: usuarioActivo.nombre
     };
     ventas.push(venta);
-    localStorage.setItem('ventas', JSON.stringify(venta));
+    localStorage.setItem('ventas', JSON.stringify(ventas));
 
     document.getElementById('t-num').textContent = venta.id;
     document.getElementById('t-fecha').textContent = venta.fecha;
@@ -702,9 +710,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const sesion = JSON.parse(localStorage.getItem('sesionActiva'));
     if (sesion) {
         usuarioActivo = sesion;
-        document.getElementById('pantalla-login').classList.add('oculto');
-        document.getElementById('sistema').classList.remove('oc
-                                                            ulto');
+        document.getElementById('pantalla-login').classList
+        .add('oculto');
+        document.getElementById('sistema').classList.remove('oculto');
         document.getElementById('nombre-usuario').textContent = sesion.nombre;
         cargarDatosGuardados();
         renderizarProductos();

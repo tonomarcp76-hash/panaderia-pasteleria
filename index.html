@@ -9,6 +9,9 @@
         body { background: #fef6e9; color: #5a3e2b; min-height: 100vh; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
         header { background: #8b5a2b; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .header-usuario { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .btn-salir { background: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .btn-salir:hover { background: #a02a1c; }
         nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         nav button { 
             background: #6d4422; 
@@ -33,7 +36,7 @@
         button.rojo:hover { background: #a02a1c; }
         button.verde { background: #27ae60; }
         button.verde:hover { background: #1e8449; }
-        input, select { padding: 8px; border: 1px solid #d4b89b; border-radius: 5px; margin: 5px; width: 100%; max-width: 300px; }
+        input, select { padding: 10px; border: 1px solid #d4b89b; border-radius: 5px; margin: 5px; width: 100%; max-width: 350px; font-size: 15px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
         .producto { background: #fdf2e4; padding: 12px; border-radius: 8px; border-left: 4px solid #8b5a2b; }
         .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ddd; flex-wrap: wrap; gap: 8px; }
@@ -49,7 +52,7 @@
         }
         .fila-ticket { display: flex; justify-content: space-between; padding: 2px 0; }
         .oculto { display: none !important; }
-        .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
+        .mensaje { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; max-width: 350px; }
         .exito { background: #d4edda; color: #155724; display: block; }
         .error { background: #f8d7da; color: #721c24; display: block; }
         .tabla { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -70,6 +73,21 @@
         .cantidad-controles { display: flex; align-items: center; gap: 8px; }
         .cantidad-controles button { padding: 2px 8px; margin: 0; }
         
+        /* LOGIN */
+        .login-pantalla { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+        .login-caja { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        .login-caja h2 { text-align: center; border: none; }
+        .login-caja button { width: 100%; margin-top: 10px; }
+        .enlace { background: none; border: none; color: #8b5a2b; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 15px; }
+        .enlace:hover { color: #5a3e1f; background: none; }
+        
         /* Impresión: SOLO muestra el ticket */
         @media print {
             body * { visibility: hidden; }
@@ -81,10 +99,57 @@
 </head>
 <body>
 
-<div id="sistema">
-    <header>
-        <h1>🥖 PANADERÍA Y PASTELERÍA</h1>
-        <p>Bienvenido al sistema de ventas</p>
+<!-- PANTALLA DE INICIO DE SESIÓN -->
+<div id="pantalla-login" class="login-pantalla">
+    <div class="login-caja">
+        <h2>🥖 Iniciar Sesión</h2>
+        <p style="text-align:center; color:#666; margin-bottom:20px;">Panadería y Pastelería</p>
+        
+        <div id="form-login">
+            <div>
+                <label><strong>Usuario:</strong></label><br>
+                <input type="text" id="usuario" placeholder="Escribe tu usuario">
+            </div>
+            <div>
+                <label><strong>Contraseña:</strong></label><br>
+                <input type="password" id="clave" placeholder="Escribe tu contraseña">
+            </div>
+            <div id="msg-login" class="mensaje"></div>
+            <br>
+            <button onclick="iniciarSesion()" class="verde">✅ Entrar al Sistema</button>
+            <p style="text-align:center;">¿No tienes cuenta? <button class="enlace" onclick="mostrarRegistro()">Regístrate aquí</button></p>
+        </div>
+        
+        <div id="form-registro" class="oculto">
+            <h3 style="text-align:center; margin-bottom:15px;">📝 Nuevo Usuario</h3>
+            <div>
+                <label><strong>Nombre Completo:</strong></label><br>
+                <input type="text" id="reg-nombre" placeholder="Tu nombre completo">
+            </div>
+            <div>
+                <label><strong>Usuario:</strong></label><br>
+                <input type="text" id="reg-usuario" placeholder="Elige tu usuario">
+            </div>
+            <div>
+                <label><strong>Contraseña:</strong></label><br>
+                <input type="password" id="reg-clave" placeholder="Crea tu contraseña">
+            </div>
+            <div id="msg-registro" class="mensaje"></div>
+            <br>
+            <button onclick="registrarUsuario()" class="verde">✅ Crear Cuenta</button>
+            <p style="text-align:center;">¿Ya tienes cuenta? <button class="enlace" onclick="mostrarLogin()">Inicia sesión</button></p>
+        </div>
+    </div>
+</div>
+
+<!-- SISTEMA PRINCIPAL (OCULTO HASTA INICIAR SESIÓN) -->
+<div id="sistema" class="oculto">
+    <header class="header-usuario">
+        <div>
+            <h1>🥖 PANADERÍA Y PASTELERÍA</h1>
+            <p>Bienvenido, <span id="nombre-usuario"></span> 👋</p>
+        </div>
+        <button class="btn-salir" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
     </header>
 
     <div class="container">
@@ -98,6 +163,10 @@
         <!-- VENTAS -->
         <div id="sec-ventas" class="seccion">
             <h2>📋 Lista de Productos</h2>
+            <div id="sin-productos" style="color:#888; padding:20px; text-align:center;">
+                No hay productos registrados.<br>
+                Ve a "Agregar Producto" para crear los tuyos.
+            </div>
             <div class="grid" id="lista-productos"></div>
 
             <h2 style="margin-top:30px;">🛒 Ventana de Compras</h2>
@@ -114,6 +183,7 @@
                 <hr style="border:1px dashed #999; margin:10px 0;">
                 <p>Ticket Nº: <span id="t-num"></span></p>
                 <p>Fecha: <span id="t-fecha"></span></p>
+                <p>Cajero: <span id="t-cajero"></span></p>
                 <hr style="border:1px dashed #999; margin:10px 0;">
                 <div id="t-items"></div>
                 <hr style="border:1px dashed #999; margin:10px 0;">
@@ -213,7 +283,7 @@
                 <label><strong>Categoría:</strong></label><br>
                 <select id="nuevo-categoria">
                     <option value="Panadería">🥖 Panadería</option>
-                    <option value="Pastelería">🎂 Pastelería</option>
+                   <option value="Pastelería">🎂 Pastelería</option>
                     <option value="Bebidas">🥤 Bebidas</option>
                     <option value="Otros">📦 Otros</option>
                 </select>
@@ -226,68 +296,156 @@
 </div>
 
 <script>
-let productos = [
-    { codigo: "PAN001", nombre: "Concha", precio: 12.00, categoria: "Panadería" },
-    { codigo: "PAN002", nombre: "Cuernito", precio: 10.00, categoria: "Panadería" },
-    { codigo: "PAN003", nombre: "Oreja", precio: 10.00, categoria: "Panadería" },
-    { codigo: "PAN004", nombre: "Bolillo", precio: 6.00, categoria: "Panadería" },
-    { codigo: "PAN005", nombre: "Telera", precio: 7.00, categoria: "Panadería" },
-    { codigo: "PAN006", nombre: "Roles de Canela", precio: 15.00, categoria: "Panadería" },
-    { codigo: "PAN007", nombre: "Empanada de Piña", precio: 12.00, categoria: "Panadería" },
-    { codigo: "PAN008", nombre: "Empanada de Carne", precio: 15.00, categoria: "Panadería" },
-    { codigo: "PAS001", nombre: "Rebanada Pastel 3 Leches", precio: 55.00, categoria: "Pastelería" },
-    { codigo: "PAS002", nombre: "Rebanada Pastel Chocolate", precio: 50.00, categoria: "Pastelería" },
-    { codigo: "PAS003", nombre: "Rebanada Pastel Fresa", precio: 48.00, categoria: "Pastelería" },
-    { codigo: "PAS004", nombre: "Pay de Queso Rebanada", precio: 45.00, categoria: "Pastelería" },
-    { codigo: "PAS005", nombre: "Pastel Completo 3 Leches", precio: 550.00, categoria: "Pastelería" },
-    { codigo: "PAS006", nombre: "Gelatina Individual", precio: 25.00, categoria: "Pastelería" },
-    { codigo: "PAS007", nombre: "Mousse de Limón", precio: 35.00, categoria: "Pastelería" }
-];
-
+// Datos del sistema
+let productos = [];
 let carrito = [];
-let ventas = JSON.parse(localStorage.getItem('ventas')) || [];
-let cierres = JSON.parse(localStorage.getItem('cierres')) || [];
-let numeroTicket = ventas.length + 1;
+let ventas = [];
+let cierres = [];
+let usuarioActivo = null;
+let numeroTicket = 1;
 
-// ✅ NAVEGACIÓN CORREGIDA
-function mostrarSeccion(nombre) {
-    // Ocultar TODAS las secciones
-    document.querySelectorAll('.seccion').forEach(sec => {
-        sec.classList.add('oculto');
-    });
-    // Quitar activo de TODOS los botones
-    document.querySelectorAll('nav button').forEach(btn => {
-        btn.classList.remove('activo');
-    });
-    // Mostrar la seleccionada
-    document.getElementById(`sec-${nombre}`).classList.remove('oculto');
-    // Marcar botón activo
-    const btnActivo = document.getElementById(`btn-${nombre}`);
-    if (btnActivo) btnActivo.classList.add('activo');
-    // Cargar historial si corresponde
-    if (nombre === 'historial') cargarHistorial();
+// ---------- FUNCIONES DE USUARIOS ----------
+function mostrarRegistro() {
+    document.getElementById('form-login').classList.add('oculto');
+    document.getElementById('form-registro').classList.remove('oculto');
+    limpiarMensajes();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function mostrarLogin() {
+    document.getElementById('form-registro').classList.add('oculto');
+    document.getElementById('form-login').classList.remove('oculto');
+    limpiarMensajes();
+}
+
+function limpiarMensajes() {
+    document.getElementById('msg-login').className = 'mensaje';
+    document.getElementById('msg-registro').className = 'mensaje';
+}
+
+function registrarUsuario() {
+    const nombre = document.getElementById('reg-nombre').value.trim();
+    const usuario = document.getElementById('reg-usuario').value.trim();
+    const clave = document.getElementById('reg-clave').value;
+    const msg = document.getElementById('msg-registro');
+
+    if (!nombre || !usuario || !clave) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Completa todos los campos';
+        return;
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    if (usuarios.find(u => u.usuario === usuario)) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Ese usuario ya existe';
+        return;
+    }
+
+    usuarios.push({ nombre, usuario, clave });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    
+    msg.className = 'mensaje exito';
+    msg.textContent = '✅ Cuenta creada. Ahora inicia sesión.';
+    
+    document.getElementById('reg-nombre').value = '';
+    document.getElementById('reg-usuario').value = '';
+    document.getElementById('reg-clave').value = '';
+    
+    setTimeout(mostrarLogin, 1500);
+}
+
+function iniciarSesion() {
+    const usuario = document.getElementById('usuario').value.trim();
+    const clave = document.getElementById('clave').value;
+    const msg = document.getElementById('msg-login');
+
+    if (!usuario || !clave) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Escribe usuario y contraseña';
+        return;
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    const encontrado = usuarios.find(u => u.usuario === usuario && u.clave === clave);
+
+    if (!encontrado) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Usuario o contraseña incorrectos';
+        return;
+    }
+
+    usuarioActivo = encontrado;
+    localStorage.setItem('sesionActiva', JSON.stringify(encontrado));
+    
+    // Mostrar sistema
+    document.getElementById('pantalla-login').classList.add('oculto');
+    document.getElementById('sistema').classList.remove('oculto');
+    document.getElementById('nombre-usuario').textContent = encontrado.nombre;
+
+    // Cargar datos
+    cargarDatosGuardados();
     renderizarProductos();
     actualizarCaja();
     document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
+}
+
+function cerrarSesion() {
+    if (!confirm('¿Cerrar sesión?')) return;
+    usuarioActivo = null;
+    localStorage.removeItem('sesionActiva');
+    
+    // Ocultar sistema y volver a login
+    document.getElementById('sistema').classList.add('oculto');
+    document.getElementById('pantalla-login').classList.remove('oculto');
+    
+    // Limpiar campos
+    document.getElementById('usuario').value = '';
+    document.getElementById('clave').value = '';
+    limpiarMensajes();
+}
+
+function cargarDatosGuardados() {
+    const guardados = JSON.parse(localStorage.getItem('productos')) || [];
+    productos = guardados;
+    ventas = JSON.parse(localStorage.getItem('ventas')) || [];
+    cierres = JSON.parse(localStorage.getItem('cierres')) || [];
+    numeroTicket = ventas.length + 1;
+    
     if (cierres.length > 0) {
         const ultimo = cierres[cierres.length - 1];
-        document.getElementById('ultimo-cierre').innerHTML = 
+        document.getElementById('ultimo-cierre').innerHTML =
             `Fecha: ${ultimo.fecha} — Ventas: ${ultimo.cantidad} — Total: $${ultimo.total.toFixed(2)}`;
     }
-});
+}
 
+// ---------- NAVEGACIÓN ----------
+function mostrarSeccion(nombre) {
+    document.querySelectorAll('.seccion').forEach(sec => sec.classList.add('oculto'));
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('activo'));
+    const seccion = document.getElementById(`sec-${nombre}`);
+    const boton = document.getElementById(`btn-${nombre}`);
+    if (seccion) seccion.classList.remove('oculto');
+    if (boton) boton.classList.add('activo');
+    if (nombre === 'historial') cargarHistorial();
+}
+
+// ---------- PRODUCTOS ----------
 function renderizarProductos() {
     const contenedor = document.getElementById('lista-productos');
+    const sinProductos = document.getElementById('sin-productos');
     contenedor.innerHTML = '';
+    
+    if (productos.length === 0) {
+        sinProductos.style.display = 'block';
+        return;
+    }
+    sinProductos.style.display = 'none';
+    
     productos.forEach(p => {
         contenedor.innerHTML += `
             <div class="producto">
                 <h4>${p.nombre}</h4>
-                <p style
-                ="color:#666; font-size:13px;">${p.categoria}</p>
+                <p style="color:#666; font-size:13px;">${p.categoria}</p>
                 <p style="font-size:18px; font-weight:bold; margin:8px 0;">$${p.precio.toFixed(2)}</p>
                 <button class="btn-agregar" onclick="agregarAlCarrito('${p.codigo}')">➕ Agregar</button>
             </div>
@@ -295,8 +453,44 @@ function renderizarProductos() {
     });
 }
 
+function agregarProducto() {
+    const nombre = document.getElementById('nuevo-nombre').value.trim();
+    const precio = parseFloat(document.getElementById('nuevo-precio').value);
+    const cat = document.getElementById('nuevo-categoria').value;
+    const msg = document.getElementById('msg-producto');
+
+    if (!nombre || isNaN(precio) || precio <= 0) {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Completa todos los datos correctamente';
+        return;
+    }
+
+    const sufijo = cat === 'Panadería' ? 'PAN' : cat === 'Pastelería' ? 'PAS' : cat === 'Bebidas' ? 'BEB' : 'OTR';
+    const maxCod = productos.filter(p => p.codigo.startsWith(sufijo)).reduce((m,p) => {
+        const n = parseInt(p.codigo.replace(/\D/g,''));
+        return n>m?n:m;
+    }, 0);
+
+    productos.push({
+        codigo: `${sufijo}${String(maxCod+1).padStart(3,'0')}`,
+        nombre, precio, categoria: cat
+    });
+
+    localStorage.setItem('productos', JSON.stringify(productos));
+
+    msg.className = 'mensaje exito';
+    msg.textContent = '✅ Producto agregado';
+    document.getElementById('nuevo-nombre').value = '';
+    document.getElementById('nuevo-precio').value = '';
+    renderizarProductos();
+
+    setTimeout(() => msg.className = 'mensaje', 3000);
+}
+
+// ---------- CARRITO ----------
 function agregarAlCarrito(codigo) {
     const prod = productos.find(p => p.codigo === codigo);
+    if (!prod) return;
     const item = carrito.find(i => i.codigo === codigo);
     if (item) item.cantidad++;
     else carrito.push({ ...prod, cantidad: 1 });
@@ -360,6 +554,7 @@ function actualizarCarrito() {
     totalEl.textContent = total.toFixed(2);
 }
 
+// ---------- PAGO Y VENTA ----------
 function abrirModalPago() {
     if (carrito.length === 0) return alert('Agrega productos primero');
     document.getElementById('modal-total').textContent = calcularTotal().toFixed(2);
@@ -391,14 +586,15 @@ function confirmarVenta() {
         fecha: fecha.toLocaleString('es-MX'),
         total,
         items: [...carrito],
-        cajero: 'Sistema'
+        cajero: usuarioActivo.nombre
     };
     ventas.push(venta);
     localStorage.setItem('ventas', JSON.stringify(ventas));
 
-    // Generar ticket
+    // Ticket
     document.getElementById('t-num').textContent = venta.id;
     document.getElementById('t-fecha').textContent = venta.fecha;
+    document.getElementById('t-cajero').textContent = venta.cajero;
     document.getElementById('t-total').textContent = total.toFixed(2);
     document.getElementById('t-pago').textContent = recibido.toFixed(2);
     document.getElementById('t-cambio').textContent = cambio.toFixed(2);
@@ -410,10 +606,7 @@ function confirmarVenta() {
     });
     document.getElementById('ticket').style.display = 'block';
 
-    // IMPRESIÓN AUTOMÁTICA AL VENDER
-    setTimeout(() => {
-        window.print();
-    }, 400);
+    setTimeout(() => window.print(), 400);
 
     cerrarModalPago();
     carrito = [];
@@ -421,6 +614,7 @@ function confirmarVenta() {
     actualizarCaja();
 }
 
+// ---------- HISTORIAL ----------
 function cargarHistorial(lista = ventas) {
     const vacio = document.getElementById('historial-vacio');
     const tabla = document.getElementById('tabla-historial');
@@ -467,6 +661,7 @@ function verTodoHistorial() {
     cargarHistorial();
 }
 
+// ---------- CAJA ----------
 function actualizarCaja() {
     const hoy = new Date().toLocaleDateString('es-MX');
     const ventasHoy = ventas.filter(v => v.fecha.includes(hoy));
@@ -508,37 +703,20 @@ function exportarCaja() {
     a.click();
 }
 
-function agregarProducto() {
-    const nombre = document.getElementById('nuevo-nombre').value.trim();
-    const precio = parseFloat(document.getElementById('nuevo-precio').value);
-    const cat = document.getElementById('nuevo-categoria').value;
-    const msg = document.getElementById('msg-producto');
-
-    if (!nombre || isNaN(precio) || precio <= 0) {
-        msg.className = 'mensaje error';
-        msg.textContent = 'Completa todos los datos correctamente';
-        return;
-    }
-
-    const sufijo = cat === 'Panadería' ? 'PAN' : cat === 'Pastelería' ? 'PAS' : cat === 'Bebidas' ? 'BEB' : 'OTR';
-    const maxCod = productos.filter(p => p.codigo.startsWith(sufijo)).reduce((m,p) => {
-        const n = parseInt(p.codigo.replace(/\D/g,''));
-        return n>m?n:m;
-    }, 0);
-
-    productos.push({
-        codigo: `${sufijo}${String(maxCod+1).padStart(3,'0')}`,
-        nombre, precio, categoria: cat
+// ---------- VERIFICAR SESIÓN AL CARGAR ----------
+document.addEventListener('DOMContentLoaded', () => {
+    const sesion = JSON.parse(localStorage.getItem('sesionActiva'));
+    if (sesion) {
+        usuarioActivo = sesion;
+                    document.getElementById('pantalla-login').classList.add('oculto');
+            document.getElementById('sistema').classList.remove('oculto');
+            document.getElementById('nombre-usuario').textContent = sesion.nombre;
+            cargarDatosGuardados();
+            renderizarProductos();
+            actualizarCaja();
+            document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
+        }
     });
-
-    msg.className = 'mensaje exito';
-    msg.textContent = '✅ Producto agregado';
-    document.getElementById('nuevo-nombre').value = '';
-    document.getElementById('nuevo-precio').value = '';
-    renderizarProductos();
-
-    setTimeout(() => msg.className = 'mensaje', 3000);
-}
 </script>
 </body>
 </html>

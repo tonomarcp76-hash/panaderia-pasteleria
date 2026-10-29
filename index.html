@@ -280,10 +280,10 @@
                 <input type="number" step="0.01" id="nuevo-precio" placeholder="0.00">
             </div>
             <div>
-                <label><strong>Categoría:</strong></label><br>
-                <select id="nuevo-categoria">
+                <label><strong>Categoría:</strong></
+                                    <select id="nuevo-categoria">
                     <option value="Panadería">🥖 Panadería</option>
-                   <option value="Pastelería">🎂 Pastelería</option>
+                    <option value="Pastelería">🎂 Pastelería</option>
                     <option value="Bebidas">🥤 Bebidas</option>
                     <option value="Otros">📦 Otros</option>
                 </select>
@@ -296,7 +296,15 @@
 </div>
 
 <script>
-// Datos del sistema
+// Limpiar datos antiguos SOLO la primera vez
+localStorage.removeItem('productosAntiguos');
+const versionSistema = '2.0';
+const versionGuardada = localStorage.getItem('versionSistema');
+if (versionGuardada !== versionSistema) {
+    localStorage.clear();
+    localStorage.setItem('versionSistema', versionSistema);
+}
+
 let productos = [];
 let carrito = [];
 let ventas = [];
@@ -377,12 +385,10 @@ function iniciarSesion() {
     usuarioActivo = encontrado;
     localStorage.setItem('sesionActiva', JSON.stringify(encontrado));
     
-    // Mostrar sistema
     document.getElementById('pantalla-login').classList.add('oculto');
     document.getElementById('sistema').classList.remove('oculto');
     document.getElementById('nombre-usuario').textContent = encontrado.nombre;
 
-    // Cargar datos
     cargarDatosGuardados();
     renderizarProductos();
     actualizarCaja();
@@ -394,19 +400,16 @@ function cerrarSesion() {
     usuarioActivo = null;
     localStorage.removeItem('sesionActiva');
     
-    // Ocultar sistema y volver a login
     document.getElementById('sistema').classList.add('oculto');
     document.getElementById('pantalla-login').classList.remove('oculto');
     
-    // Limpiar campos
     document.getElementById('usuario').value = '';
     document.getElementById('clave').value = '';
     limpiarMensajes();
 }
 
 function cargarDatosGuardados() {
-    const guardados = JSON.parse(localStorage.getItem('productos')) || [];
-    productos = guardados;
+    productos = JSON.parse(localStorage.getItem('productos')) || [];
     ventas = JSON.parse(localStorage.getItem('ventas')) || [];
     cierres = JSON.parse(localStorage.getItem('cierres')) || [];
     numeroTicket = ventas.length + 1;
@@ -591,7 +594,6 @@ function confirmarVenta() {
     ventas.push(venta);
     localStorage.setItem('ventas', JSON.stringify(ventas));
 
-    // Ticket
     document.getElementById('t-num').textContent = venta.id;
     document.getElementById('t-fecha').textContent = venta.fecha;
     document.getElementById('t-cajero').textContent = venta.cajero;
@@ -699,7 +701,7 @@ function exportarCaja() {
     const blob = new Blob([texto], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `cierre-caja-${hoy}.txt`;
+        a.download = `cierre-caja-${hoy}.txt`;
     a.click();
 }
 
@@ -708,15 +710,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const sesion = JSON.parse(localStorage.getItem('sesionActiva'));
     if (sesion) {
         usuarioActivo = sesion;
-                    document.getElementById('pantalla-login').classList.add('oculto');
-            document.getElementById('sistema').classList.remove('oculto');
-            document.getElementById('nombre-usuario').textContent = sesion.nombre;
-            cargarDatosGuardados();
-            renderizarProductos();
-            actualizarCaja();
-            document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
-        }
-    });
+        document.getElementById('pantalla-login').classList.add('oculto');
+        document.getElementById('sistema').classList.remove('oculto');
+        document.getElementById('nombre-usuario').textContent = sesion.nombre;
+        cargarDatosGuardados();
+        renderizarProductos();
+        actualizarCaja();
+        document.getElementById('caja-fecha').textContent = new Date().toLocaleDateString('es-MX');
+    }
+});
 </script>
 </body>
 </html>
